@@ -1,0 +1,79 @@
+<form>
+  <!-- Sign In Title -->
+  <h2 class="text-2xl font-bold text-gray-900 mb-8">Sign up</h2>
+
+  <!-- First Name Input -->
+  <div class="relative w-full mb-4">
+    <input type="text" id="fname"
+      class=" shadow-sm block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-colorInput rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+      placeholder=" " />
+    <label for="fname"
+      class="absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-colorInput px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">
+      First Name
+    </label>
+  </div>
+
+  <!--Last Name Input -->
+  <div class="relative w-full mb-4">
+    <input type="text" id="lname"
+      class=" shadow-sm block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-colorInput rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+      placeholder=" " />
+    <label for="lname"
+      class="absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-colorInput px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">
+      Last Name
+    </label>
+  </div>
+
+  <!-- Email Input -->
+  <div class="relative w-full mb-4">
+    <input type="email" id="email"
+      class=" shadow-sm block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-colorInput rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+      placeholder=" " />
+    <label for="email"
+      class="absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-colorInput px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">
+      Email
+    </label>
+  </div>
+
+  <!-- Password Input -->
+  <div class="relative w-full mb-4">
+    <input type="password" id="password"
+      class=" shadow-sm block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-colorInput rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+      placeholder=" " />
+    <label for="password"
+      class="absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-colorInput px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">
+      Password
+    </label>
+    <!-- Password Visibility Toggle -->
+    <button type="button" class="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+      <i class="fa-solid fa-eye text-sm"></i>
+    </button>
+  </div>
+
+  <!-- rePassword Input -->
+  <div class="relative w-full mb-4">
+    <input type="password" id="repassword"
+      class=" shadow-sm block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-colorInput rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+      placeholder=" " />
+    <label for="repassword"
+      class="absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-colorInput px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">
+      Confirm Password
+    </label>
+    <!-- Password Visibility Toggle -->
+    <button type="button" class="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+      <i class="fa-solid fa-eye text-sm"></i>
+    </button>
+  </div>
+
+  <!-- Back to Login -->
+  <div class="w-full text-center mb-10">
+    <span class="font-medium">Already have an account?<a routerLink="/auth-layout/login"
+        class="text-base text-colorNavLink hover:underline cursor-pointer"> Login</a></span>
+  </div>
+
+  <!-- Sign up Button -->
+  <button type="submit"
+    class="w-full bg-colorNavLink text-white py-2 px-4 rounded-2xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    Sign up
+  </button>
+</form>
