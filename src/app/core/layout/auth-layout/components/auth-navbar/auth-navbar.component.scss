@@ -1,0 +1,11 @@
+.nav-link {
+  @apply block p-4 m-2 xl:m-0 shadow-sm font-normal rounded-2xl border text-colorNavLink hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:py-2 md:px-6;
+}
+
+.active-link {
+  @apply font-bold text-blue-700 border-none border-l-colorBorderNavLinkActive shadow-none;
+}
+
+.dropdown-item {
+  @apply block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white;
+}
