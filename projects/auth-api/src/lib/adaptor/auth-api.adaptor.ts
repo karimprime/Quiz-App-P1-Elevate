@@ -8,11 +8,11 @@ export class AuthAPIAdaptorService implements Adaptor{
 
   constructor() { }
 
-  adapt(data:any) { //Adapt Response
+  adapt(data: any): { message: string, token: string, userEmail: string } {
     return {
-      message:data.message,
-      token:data.token,
-      userEmail:data.user.email,
-    }
+      message: data.message,
+      token: data.token,
+      userEmail: data.user?.email || '',
+    };
   }
 }

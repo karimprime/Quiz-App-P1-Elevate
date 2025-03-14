@@ -4,7 +4,7 @@ module.exports = {
     "./src/**/*.{html,ts}",
     './node_modules/flyonui/dist/js/*.js'
   ],
-  darkMode: 'class',
+  darkMode: 'selector',
   theme: {
     extend: {
       colors: {

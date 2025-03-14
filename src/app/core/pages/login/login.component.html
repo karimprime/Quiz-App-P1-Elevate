@@ -1,37 +1,82 @@
-<form class="">
+<form [formGroup]="loginForm" (ngSubmit)="LoginSubmit()" aria-labelledby="login-form-title">
+  <!-- Error Message -->
+  @if (apiError()) {
+    <div class="war alert-outline alert-error flex items-center gap-4 p-2 rounded-xl" role="alert">
+      <span class="icon-[tabler--alert-triangle] size-6"></span>
+      <p><span class="text-lg font-semibold"></span>{{ apiError() }}</p>
+    </div>
+  }
+
+  <!-- Title -->
   <h2 class="text-2xl font-bold text-gray-900 mb-8">Sign in</h2>
 
-
+  <!-- Email -->
   <div class="w-full mb-8">
     <div class="relative w-full">
-      <input id="toggle-Email-floating" type="email" class="input input-floating peer rounded-lg bg-colorInput" placeholder="Enter Your Email" />
+      <input
+        id="toggle-Email-floating"
+        type="email"
+        class="input input-floating peer rounded-lg bg-colorInput"
+        [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+        placeholder="Enter Your Email"
+        formControlName="email"
+      />
       <label class="input-floating-label" for="toggle-Email-floating">Email</label>
     </div>
   </div>
 
-  <!-- Password -->
-  <div class="input-group w-full mb-8 rounded-lg bg-colorInput">
-    <div class="relative w-full rounded-lg bg-colorInput">
-      <input id="toggle-password-floating" type="password" class="input input-floating peer rounded-lg bg-colorInput" placeholder="Enter Password" />
-      <label class="input-floating-label" for="toggle-password-floating">Password</label>
-    </div>
-    <span class="input-group-text !rounded-lg !bg-colorInput">
-      <button type="button" data-toggle-password='{ "target": "#toggle-password-floating" }' class="block" aria-label="password toggle">
-        <span class="icon-[tabler--eye] text-base-content/80 password-active:block hidden size-5 flex-shrink-0"></span>
-        <span class="icon-[tabler--eye-off] text-base-content/80 password-active:hidden block size-5 flex-shrink-0"></span>
-      </button>
-    </span>
+<!-- Password -->
+<div class="input-group w-full mb-8 rounded-lg bg-colorInput">
+  <div class="relative w-full rounded-lg bg-colorInput">
+    <input
+      id="toggle-password-floating"
+      [type]="showPassword() ? 'text' : 'password'"
+      class="input input-floating peer rounded-lg bg-colorInput"
+      [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+      placeholder="Enter Password"
+      formControlName="password"
+    />
+    <label class="input-floating-label" for="toggle-password-floating">Password</label>
   </div>
+  <span class="input-group-text !rounded-lg !bg-colorInput">
+    <button
+      type="button"
+      (click)="togglePasswordVisibility()"
+      class="block"
+      aria-label="password toggle"
+    >
+      <span
+        class="icon-[tabler--eye] text-base-content/80"
+        [class.hidden]="showPassword()"
+      ></span>
+      <span
+        class="icon-[tabler--eye-off] text-base-content/80"
+        [class.hidden]="!showPassword()"
+      ></span>
+    </button>
+  </span>
+</div>
 
   <!-- Forgot Password Link -->
   <div class="w-full text-right mb-10">
-    <a routerLink="/auth-layout/forget-password"
-      class="text-base font-normal text-colorNavLink hover:underline cursor-pointer">Recover Password ?</a>
+    <a
+      routerLink="/auth-layout/forget-password"
+      class="text-base font-normal text-colorNavLink hover:underline cursor-pointer"
+    >
+      Recover Password ?
+    </a>
   </div>
 
   <!-- Sign In Button -->
-  <button type="submit"
-    class="w-full bg-colorNavLink text-white py-2 px-4 rounded-2xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-    Sign in
+  <button
+    [disabled]="loginForm.invalid || isLoading()"
+    type="submit"
+    class="w-full bg-colorNavLink text-white py-2 px-4 rounded-2xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-blue-900"
+  >
+    @if (isLoading()) {
+      <i class="fa-solid fa-spinner fa-spin"></i>
+    } @else {
+      <span>Sign in</span>
+    }
   </button>
-  </form>
+</form>
