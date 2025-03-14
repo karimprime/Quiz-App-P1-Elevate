@@ -1,5 +1,5 @@
 import { Component, inject, signal, OnDestroy } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { AuthApiService } from 'auth-api';
@@ -13,7 +13,6 @@ import { AuthApiService } from 'auth-api';
 })
 export class LoginComponent {
   private readonly _authApiService = inject(AuthApiService);
-  private readonly _router = inject(Router);
 
   apiError = signal<string>('');
   isLoading = signal<boolean>(false);
@@ -45,7 +44,6 @@ export class LoginComponent {
       next: (res) => {
         if ('token' in res && res.message === 'success') {
           localStorage.setItem('userToken', res.token);
-          this._router.navigate(['/dashboard']); // Redirect to dashboard or desired route
           console.log('Login success', res);
         } else {
           this.apiError.set('Invalid response from server.'); // Handle unexpected response
@@ -54,10 +52,7 @@ export class LoginComponent {
       error: (err) => {
         console.error('Login failed', err);
         this.apiError.set(err.error?.message || 'Login failed. Please try again.'); // Set error message
-      },
-      complete: () => {
-        this.isLoading.set(false);
-      },
+      }
     });
   }
 
