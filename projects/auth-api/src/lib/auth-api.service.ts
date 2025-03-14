@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, map, of } from 'rxjs';
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode'; // Import jwtDecode
 
 import { AuthAPI } from './base/AuthAPI';
 import { AuthAPIAdaptorService } from './adaptor/auth-api.adaptor';
@@ -48,7 +48,6 @@ export class AuthApiService implements AuthAPI {
     this._router.navigate(['/auth/login']);
   }
 
-
   get isAuthenticated(): boolean {
     if (this._platformService.checkPlatform() !== 'Browser') return false;
 
@@ -70,7 +69,6 @@ export class AuthApiService implements AuthAPI {
       return false;
     }
   }
-
 
   private _getToken(): string | null {
     return this._platformService.safeLocalStorageGet(this._userTokenKey);
