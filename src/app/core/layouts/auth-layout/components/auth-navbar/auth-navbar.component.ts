@@ -3,7 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-auth-navbar',
-  imports: [ RouterLink, RouterLinkActive],
+  imports: [RouterLink , RouterLinkActive],
   templateUrl: './auth-navbar.component.html',
   styleUrl: './auth-navbar.component.scss'
 })

@@ -1,0 +1,58 @@
+<section class="grid grid-cols-1 xl:grid-cols-2 h-screen">
+
+  <!-- Left Side (Visible only on XL screens and above) -->
+  <div class="side hidden xl:grid place-items-start p-12 2xl:px-32 2xl:py-20">
+    <div class="text-center xl:text-left">
+      <h2 class="font-bold text-wrap text-4xl xl:text-5xl w-72 text-black">
+        Welcome to <strong class="text-colorTitle">Elevate</strong>
+      </h2>
+      <p class="text-lg w-full xl:w-[30rem] pt-2 text-gray-900">
+        Quidem autem voluptatibus qui quaerat aspernatur architecto natus
+      </p>
+      <img src="/images/sideauth.png" alt="Side Authentication" class="pt-20 w-full max-w-md mx-auto xl:mx-0">
+    </div>
+  </div>
+
+  <!-- Right Side (Navbar + Router Outlet) -->
+  <div class="flex flex-col w-full p-6 xl:p-12">
+
+    <!-- Navbar (Always Visible) -->
+    <div class="w-full xl:pl-6">
+      <app-auth-navbar />
+    </div>
+
+    <!-- Main Content (Router Outlet) -->
+    <div class="flex flex-col justify-center items-center xl:items-start w-full h-full">
+      <div class="w-full max-w-md mx-auto">
+        <router-outlet />
+
+        <div class="flex items-center my-6">
+          <div class="flex-grow border-t-2 border-colorBorderContinue shadow-sm"></div>
+          <span class="px-4 text-colorContinue text-lg">Or Continue with</span>
+          <div class="flex-grow border-t-2 border-colorBorderContinue shadow-sm"></div>
+        </div>
+
+        <!-- Social Media Buttons -->
+        <div class="flex justify-between items-center mt-10 md:px-6 xl:px-8">
+          <button class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 p-5 rounded-xl shadow-md hover:shadow-lg transition-all flex justify-center items-center">
+            <img src="/icons/google.png" alt="Google Logo" class="w-6" />
+          </button>
+
+          <button class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 p-5 rounded-xl shadow-md hover:shadow-lg transition-all flex justify-center items-center">
+            <img src="/icons/twitter.png" alt="Twitter Logo" class="w-6" />
+          </button>
+
+          <button class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 p-5 rounded-xl shadow-md hover:shadow-lg transition-all flex justify-center items-center">
+            <img src="/icons/facebook.png" alt="Facebook Logo" class="w-6" />
+          </button>
+
+          <button class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 p-5 rounded-xl shadow-md hover:shadow-lg transition-all flex justify-center items-center">
+            <img src="/icons/apple.png" alt="Apple Logo" class="w-6" />
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</section>

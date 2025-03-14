@@ -1,6 +1,4 @@
-import { Component, inject } from '@angular/core';
-import { FlowbiteService } from './core/services/flowbite/flowbite.service';
-import { initFlowbite } from 'flowbite';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
@@ -10,14 +8,5 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'quiz-app';
-
-  private readonly flowbiteService = inject(FlowbiteService);
-
-
-  ngOnInit(): void {
-    this.flowbiteService.loadFlowbite((flowbite) => {
-      initFlowbite();
-    });
-  }
+  title = 'quiz-app-v2';
 }

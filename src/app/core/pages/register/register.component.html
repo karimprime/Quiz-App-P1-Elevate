@@ -1,69 +1,62 @@
-<form>
-  <!-- Sign In Title -->
-  <h2 class="text-2xl font-bold text-gray-900 mb-8">Sign up</h2>
+<form class="">
+<h2 class="text-2xl font-bold text-gray-900 mb-8">Sign in</h2>
 
-  <!-- First Name Input -->
-  <div class="relative w-full mb-4">
-    <input type="text" id="fname"
-      class=" shadow-sm block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-colorInput rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-      placeholder=" " />
-    <label for="fname"
-      class="absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-colorInput px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">
-      First Name
-    </label>
+<div class="w-full mb-8">
+  <div class="relative w-full">
+    <input id="toggle-UserName-floating" type="text" class="input input-floating peer rounded-lg bg-colorInput" placeholder="Enter Your UserName" />
+    <label class="input-floating-label" for="toggle-UserName-floating">UserName</label>
   </div>
+</div>
 
-  <!--Last Name Input -->
-  <div class="relative w-full mb-4">
-    <input type="text" id="lname"
-      class=" shadow-sm block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-colorInput rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-      placeholder=" " />
-    <label for="lname"
-      class="absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-colorInput px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">
-      Last Name
-    </label>
+<div class="w-full mb-8">
+  <div class="relative w-full">
+    <input id="toggle-fName-floating" type="text" class="input input-floating peer rounded-lg bg-colorInput" placeholder="Enter Your First Name" />
+    <label class="input-floating-label" for="toggle-fName-floating">First Name</label>
   </div>
+</div>
 
-  <!-- Email Input -->
-  <div class="relative w-full mb-4">
-    <input type="email" id="email"
-      class=" shadow-sm block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-colorInput rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-      placeholder=" " />
-    <label for="email"
-      class="absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-colorInput px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">
-      Email
-    </label>
+<div class="w-full mb-8">
+  <div class="relative w-full">
+    <input id="toggle-lName-floating" type="text" class="input input-floating peer rounded-lg bg-colorInput" placeholder="Enter Your Last Name" />
+    <label class="input-floating-label" for="toggle-lName-floating">Last Name</label>
   </div>
+</div>
 
-  <!-- Password Input -->
-  <div class="relative w-full mb-4">
-    <input type="password" id="password"
-      class=" shadow-sm block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-colorInput rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-      placeholder=" " />
-    <label for="password"
-      class="absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-colorInput px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">
-      Password
-    </label>
-    <!-- Password Visibility Toggle -->
-    <button type="button" class="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-      <i class="fa-solid fa-eye text-sm"></i>
+<div class="w-full mb-8">
+  <div class="relative w-full">
+    <input id="toggle-Email-floating" type="email" class="input input-floating peer rounded-lg bg-colorInput" placeholder="Enter Your Email" />
+    <label class="input-floating-label" for="toggle-Email-floating">Email</label>
+  </div>
+</div>
+
+<!-- Password -->
+<div class="input-group w-full mb-8 rounded-lg bg-colorInput">
+  <div class="relative w-full rounded-lg bg-colorInput">
+    <input id="toggle-password-floating" type="password" class="input input-floating peer rounded-lg bg-colorInput" placeholder="Enter Password" />
+    <label class="input-floating-label" for="toggle-password-floating">Password</label>
+  </div>
+  <span class="input-group-text !rounded-lg !bg-colorInput">
+    <button type="button" data-toggle-password='{ "target": "#toggle-password-floating" }' class="block" aria-label="password toggle">
+      <span class="icon-[tabler--eye] text-base-content/80 password-active:block hidden size-5 flex-shrink-0"></span>
+      <span class="icon-[tabler--eye-off] text-base-content/80 password-active:hidden block size-5 flex-shrink-0"></span>
     </button>
-  </div>
+  </span>
+</div>
 
-  <!-- rePassword Input -->
-  <div class="relative w-full mb-4">
-    <input type="password" id="repassword"
-      class=" shadow-sm block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-colorInput rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-      placeholder=" " />
-    <label for="repassword"
-      class="absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-colorInput px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">
-      Confirm Password
-    </label>
-    <!-- Password Visibility Toggle -->
-    <button type="button" class="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-      <i class="fa-solid fa-eye text-sm"></i>
-    </button>
+<!-- Confirm Password -->
+<div class="input-group w-full mb-8 rounded-lg bg-colorInput">
+  <div class="relative w-full">
+    <input id="toggle-rePassword-floating" type="password" class="input input-floating peer rounded-lg bg-colorInput" placeholder="Confirm Password" />
+    <label class="input-floating-label" for="toggle-rePassword-floating">Confirm Password</label>
   </div>
+  <span class="input-group-text !bg-colorInput !rounded-lg">
+    <button type="button" data-toggle-password='{ "target": "#toggle-rePassword-floating" }' class="block" aria-label="password toggle">
+      <span class="icon-[tabler--eye] text-base-content/80 password-active:block hidden size-5 flex-shrink-0"></span>
+      <span class="icon-[tabler--eye-off] text-base-content/80 password-active:hidden block size-5 flex-shrink-0"></span>
+    </button>
+  </span>
+</div>
+
 
   <!-- Back to Login -->
   <div class="w-full text-center mb-10">

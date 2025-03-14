@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "quiz-app": {
+    "quiz-app-v2": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/quiz-app",
+            "outputPath": "dist/quiz-app-v2",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -36,7 +36,7 @@
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
             ],
             "scripts": [
-              "node_modules/flowbite/dist/flowbite.min.js"
+              "node_modules/flyonui/flyonui.js"
             ],
             "server": "src/main.server.ts",
             "outputMode": "server",
@@ -72,10 +72,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "quiz-app:build:production"
+              "buildTarget": "quiz-app-v2:build:production"
             },
             "development": {
-              "buildTarget": "quiz-app:build:development"
+              "buildTarget": "quiz-app-v2:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -105,9 +105,42 @@
           }
         }
       }
+    },
+    "auth-api": {
+      "projectType": "library",
+      "root": "projects/auth-api",
+      "sourceRoot": "projects/auth-api/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/auth-api/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/auth-api/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/auth-api/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/auth-api/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
     }
   },
   "cli": {
-    "analytics": "f5d6aa71-ac12-4f72-87e2-1192440fce43"
+    "analytics": "26299074-4049-45bb-b012-8aad3c679943"
   }
 }
