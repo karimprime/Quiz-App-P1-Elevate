@@ -41,7 +41,7 @@ export class LoginComponent {
     this.apiError.set(''); // Clear previous errors
 
     this.loginSub = this._authApiService.login(this.loginForm.value).subscribe({
-      next: (res) => {
+      next: (res:any) => {
         if ('token' in res && res.message === 'success') {
           localStorage.setItem('userToken', res.token);
           console.log('Login success', res);
@@ -49,7 +49,7 @@ export class LoginComponent {
           this.apiError.set('Invalid response from server.'); // Handle unexpected response
         }
       },
-      error: (err) => {
+      error: (err:any) => {
         console.error('Login failed', err);
         this.apiError.set(err.error?.message || 'Login failed. Please try again.'); // Set error message
       }
