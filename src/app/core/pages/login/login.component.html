@@ -1,11 +1,13 @@
 <form [formGroup]="loginForm" (ngSubmit)="LoginSubmit()" aria-labelledby="login-form-title">
   <!-- Error Message -->
-  @if (apiError()) {
-    <div class="war alert-outline alert-error flex items-center gap-4 p-2 rounded-xl" role="alert">
+  @if(apiError()){
+    <div class="error-dropdown alert-soft alert-error flex items-center gap-4 px-2 py-1 rounded-xl z-50
+    absolute top-24 right-3  transform -translate-x-1/2 transition-all" role="alert">
       <span class="icon-[tabler--alert-triangle] size-6"></span>
-      <p><span class="text-lg font-semibold"></span>{{ apiError() }}</p>
+      <p><span class="text-lg font-semibold"></span>Email or Password is incorrect </p>
     </div>
   }
+
 
   <!-- Title -->
   <h2 class="text-2xl font-bold text-gray-900 mb-8">Sign in</h2>

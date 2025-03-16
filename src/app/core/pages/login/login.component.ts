@@ -1,22 +1,23 @@
-import { Component, inject, signal, OnDestroy } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { AuthApiService } from 'auth-api';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
   imports: [RouterLink, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
   private readonly _authApiService = inject(AuthApiService);
+  private readonly _authService = inject(AuthService);
 
   apiError = signal<string>('');
   isLoading = signal<boolean>(false);
-  showPassword = signal<boolean>(false); // Signal to manage password visibility
+  showPassword = signal<boolean>(false);
 
   loginForm: FormGroup = new FormGroup({
     email: new FormControl(null, [Validators.required, Validators.email]),
@@ -27,31 +28,32 @@ export class LoginComponent {
   });
 
   togglePasswordVisibility(): void {
-    this.showPassword.update((value) => !value); // Toggle the value
+    this.showPassword.update((value) => !value);
   }
 
   private loginSub!: Subscription;
 
   LoginSubmit(): void {
-    console.log(this.loginForm.value);
-
     if (this.loginForm.invalid || this.isLoading()) return;
 
-    this.isLoading.set(true); // Set loading state
-    this.apiError.set(''); // Clear previous errors
+    this.isLoading.set(true);
+    this.apiError.set('');
 
     this.loginSub = this._authApiService.login(this.loginForm.value).subscribe({
-      next: (res:any) => {
+      next: (res) => {
         if ('token' in res && res.message === 'success') {
-          localStorage.setItem('userToken', res.token);
+          this._authService.userData.next(res); // Trigger token storage in AuthService
           console.log('Login success', res);
         } else {
-          this.apiError.set('Invalid response from server.'); // Handle unexpected response
+          this.apiError.set('Invalid response from server.');
         }
       },
-      error: (err:any) => {
+      error: (err) => {
         console.error('Login failed', err);
-        this.apiError.set(err.error?.message || 'Login failed. Please try again.'); // Set error message
+        this.apiError.set(err.error?.message || 'Login failed. Please try again.');
+      },
+      complete: () => {
+        this.isLoading.set(false);
       }
     });
   }
