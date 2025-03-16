@@ -1,0 +1,11 @@
+{
+  "routes": {
+    "/": {},
+    "/auth-layout": {},
+    "/auth-layout/forget-password": {},
+    "/auth-layout/login": {},
+    "/auth-layout/register": {},
+    "/auth-layout/set-password": {},
+    "/auth-layout/verify-code": {}
+  }
+}
