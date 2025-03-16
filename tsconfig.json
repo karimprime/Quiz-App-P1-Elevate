@@ -4,8 +4,8 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "auth-api": [
-        "./dist/auth-api"
+      "auth-api-elevate": [
+        "./dist/auth-api-elevate"
       ]
     },
     "outDir": "./dist/out-tsc",

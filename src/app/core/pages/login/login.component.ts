@@ -2,8 +2,8 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { AuthApiService } from 'auth-api';
 import { AuthService } from '../../services/auth/auth.service';
+import { AuthApiElevateService } from 'auth-api-elevate';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth/auth.service';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-  private readonly _authApiService = inject(AuthApiService);
+  private readonly _authApiElevateService = inject(AuthApiElevateService);
   private readonly _authService = inject(AuthService);
 
   apiError = signal<string>('');
@@ -39,7 +39,7 @@ export class LoginComponent {
     this.isLoading.set(true);
     this.apiError.set('');
 
-    this.loginSub = this._authApiService.login(this.loginForm.value).subscribe({
+    this.loginSub = this._authApiElevateService.login(this.loginForm.value).subscribe({
       next: (res) => {
         if ('token' in res && res.message === 'success') {
           this._authService.userData.next(res); // Trigger token storage in AuthService
