@@ -1,7 +1,6 @@
 ## 📂 Project Structure
 ```
-Task-Elevate-E-Commerce/
-├── .editorconfig
+─ .editorconfig
 ├── .gitignore
 ├── .vscode
     ├── extensions.json
@@ -12,7 +11,7 @@ Task-Elevate-E-Commerce/
 ├── package-lock.json
 ├── package.json
 ├── projects
-    └── auth-api
+    └── auth-api-elevate
     │   ├── README.md
     │   ├── ng-package.json
     │   ├── package.json
@@ -20,8 +19,8 @@ Task-Elevate-E-Commerce/
     │       ├── lib
     │       │   ├── adaptor
     │       │   │   └── auth-api.adaptor.ts
-    │       │   ├── auth-api.service.spec.ts
-    │       │   ├── auth-api.service.ts
+    │       │   ├── auth-api-elevate.service.spec.ts
+    │       │   ├── auth-api-elevate.service.ts
     │       │   ├── base
     │       │   │   └── AuthAPI.ts
     │       │   ├── enums
