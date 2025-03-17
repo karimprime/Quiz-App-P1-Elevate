@@ -22,9 +22,9 @@ module.exports = {
     },
   },
   plugins: [
-    require("flyonui"), // FlyonUI plugin
-    require("flyonui/plugin"), // Ensure this is correct (usually only one import is needed)
-    addDynamicIconSelectors(), // Iconify plugin for dynamic icons
+    require("flyonui"), 
+    require("flyonui/plugin"),
+    addDynamicIconSelectors(),
   ],
   flyonui: {
     themes: true, // Enable all themes
