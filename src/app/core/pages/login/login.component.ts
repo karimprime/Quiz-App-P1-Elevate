@@ -8,15 +8,17 @@ import { AuthApiKPService } from 'AuthApi-KP';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [RouterLink, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   private readonly _authApiKPService = inject(AuthApiKPService);
   private readonly _authService = inject(AuthService);
   private readonly _notificationService = inject(NotificationService);
 
+  apiError = signal<string>('');
   isLoading = signal<boolean>(false);
   showPassword = signal<boolean>(false);
   isPopoverVisible = signal<boolean>(false);
@@ -35,12 +37,18 @@ export class LoginComponent implements OnInit {
     ]),
   });
 
-  private loginSub: Subscription = new Subscription();
+  private loginSub!: Subscription;
 
   ngOnInit(): void {
     this.loginForm.get('password')?.valueChanges.subscribe((value) => {
       this.updatePasswordStrength(value);
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.loginSub) {
+      this.loginSub.unsubscribe();
+    }
   }
 
   togglePasswordVisibility(): void {
@@ -83,12 +91,17 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid || this.isLoading()) return;
 
     this.isLoading.set(true);
+    this.apiError.set('');
 
     this.loginSub = this._authApiKPService.login(this.loginForm.value).subscribe({
       next: (res) => {
         if ('token' in res && res.message === 'success') {
           this._authService.userData.next(res);
+          console.log('Login success', res);
           this._notificationService.success('Login successful!');
+        } else {
+          this.apiError.set('Invalid response from server.');
+          this._notificationService.error('Email or Password is incorrect!');
         }
       },
       error: (err) => {
@@ -100,12 +113,4 @@ export class LoginComponent implements OnInit {
       },
     });
   }
-
-    // Clean up subscriptions
-    ngOnDestroy(): void {
-      if (this.loginSub) {
-        this.loginSub.unsubscribe();
-      }
-    }
-
 }
