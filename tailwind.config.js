@@ -1,36 +1,38 @@
 /** @type {import('tailwindcss').Config} */
+const { addDynamicIconSelectors } = require("@iconify/tailwind");
+
 module.exports = {
   content: [
     "./src/**/*.{html,ts}",
-    './node_modules/flyonui/dist/js/*.js'
+    "./node_modules/flyonui/dist/js/*.js", // Ensure this path is correct
   ],
-  darkMode: 'selector',
+  darkMode: "selector", // Use 'selector' for manual dark mode toggling
   theme: {
     extend: {
       colors: {
-        'colorNavLink': '#4461F2',
-        'colorBorderNavLinkActive': '#E0E0E9',
-        'colorTitle': '#122D9C',
-        'colorInput': '#F9F9F9',
-        'colorContinue': '#6C737F',
-        'colorBorderContinue': '#E7E7E7',
+        colorNavLink: "#4461F2",
+        colorBorderNavLinkActive: "#E0E0E9",
+        colorTitle: "#122D9C",
+        colorInput: "#F9F9F9",
+        colorBorderInput: "#3364FD",
+        colorErrorBorderInput: "#F04438",
+        colorContinue: "#6C737F",
+        colorBorderContinue: "#E7E7E7",
       },
     },
   },
   plugins: [
-    require('flyonui'),
-    require('flyonui/plugin')
+    require("flyonui"), // FlyonUI plugin
+    require("flyonui/plugin"), // Ensure this is correct (usually only one import is needed)
+    addDynamicIconSelectors(), // Iconify plugin for dynamic icons
   ],
-
   flyonui: {
-    themes: true, // false: only light + dark | true: all themes | array: specific themes like this ["light", "dark", "soft"]
-    darkTheme: "corporate", // name of one of the included themes for dark mode
-    base: true, // applies background color and foreground color for root element by default
-    styled: true, // include FlyonUI colors and design decisions for all components
-    utils: true, // adds responsive and modifier utility classes
-    vendors: false, // default is false when true add customize css for apexChart, editor.js, flatpickr, fullcalendar, notyf, raty-js
-    logs: true, // Shows info about FlyonUI version and used config in the console when building your CSS
-    themeRoot: ":root" // The element that receives theme color CSS variables
-  }
-}
-
+    themes: true, // Enable all themes
+    base: true, // Apply base styles
+    styled: true, // Include FlyonUI colors and design decisions
+    utils: true, // Add utility classes
+    vendors: true, // Enable vendor-specific CSS (e.g., for Notyf, ApexCharts, etc.)
+    logs: true, // Show FlyonUI logs in the console
+    themeRoot: ":root", // Apply theme variables to the root element
+  },
+};

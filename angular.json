@@ -33,7 +33,8 @@
             ],
             "styles": [
               "src/styles.scss",
-              "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              "node_modules/notyf/notyf.min.css"
             ],
             "scripts": [
               "node_modules/flyonui/flyonui.js"
@@ -106,23 +107,23 @@
         }
       }
     },
-    "auth-api-elevate": {
+    "AuthApi-KP": {
       "projectType": "library",
-      "root": "projects/auth-api-elevate",
-      "sourceRoot": "projects/auth-api-elevate/src",
+      "root": "projects/auth-api-kp",
+      "sourceRoot": "projects/auth-api-kp/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/auth-api-elevate/ng-package.json"
+            "project": "projects/auth-api-kp/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/auth-api-elevate/tsconfig.lib.prod.json"
+              "tsConfig": "projects/auth-api-kp/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/auth-api-elevate/tsconfig.lib.json"
+              "tsConfig": "projects/auth-api-kp/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -130,7 +131,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/auth-api-elevate/tsconfig.spec.json",
+            "tsConfig": "projects/auth-api-kp/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"

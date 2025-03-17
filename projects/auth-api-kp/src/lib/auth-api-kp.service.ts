@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { AuthAPIAdaptorService } from './adaptor/auth-api.adaptor';
 import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
 import { AuthEndPoint } from './enums/AuthAPI.endPoint';
+import { AuthAPIAdaptorService } from './adaptor/auth-api.adaptor';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthApiElevateService {
+export class AuthApiKPService {
 
   private readonly _httpClient = inject(HttpClient);
   private readonly _authAPIAdaptorService = inject(AuthAPIAdaptorService);
@@ -30,4 +30,3 @@ export class AuthApiElevateService {
     );
   }
 }
-

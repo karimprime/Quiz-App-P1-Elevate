@@ -3,7 +3,7 @@ import { PlatFormService } from '../platform/platform.service';
 import { BehaviorSubject } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
-import { AuthApiElevateService } from 'auth-api-elevate';
+import { AuthApiKPService } from 'AuthApi-KP';
 
 @Injectable({
   providedIn: 'root'
@@ -11,13 +11,13 @@ import { AuthApiElevateService } from 'auth-api-elevate';
 export class AuthService {
   private readonly _router = inject(Router);
   private readonly _platformService = inject(PlatFormService);
-  private readonly _authApiElevateService = inject(AuthApiElevateService);
+  private readonly _authApiKPService = inject(AuthApiKPService);
 
   private readonly _userTokenKey = 'userToken';
   userData: BehaviorSubject<any | null> = new BehaviorSubject<any | null>(null);
 
   constructor() {
-    this._authApiElevateService.userData.subscribe((data) => {
+    this._authApiKPService.userData.subscribe((data) => {
       if (data && data.token) {
         this._platformService.safeLocalStorageSet(this._userTokenKey, data.token);
         this._updateUserData(data.token);

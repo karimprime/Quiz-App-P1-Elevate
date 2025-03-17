@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../dist/auth-api-elevate",
+  "dest": "../../dist/auth-api-kp",
   "lib": {
     "entryFile": "src/public-api.ts"
   }
