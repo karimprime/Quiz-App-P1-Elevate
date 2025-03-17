@@ -1,6 +1,6 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { Notyf } from 'notyf'; // Import Notyf
+import { Notyf } from 'notyf';
 
 @Injectable({
   providedIn: 'root',
@@ -12,15 +12,15 @@ export class NotificationService {
     // Initialize Notyf only in the browser environment
     if (isPlatformBrowser(this.platformId)) {
       this.notyf = new Notyf({
-        duration: 5000, // Notification duration in milliseconds
+        duration: 5000,
         position: {
-          x: 'right', // Horizontal position (left, center, right)
-          y: 'top', // Vertical position (top, bottom)
+          x: 'right',
+          y: 'bottom',
         },
         types: [
           {
             type: 'primary',
-            background: 'green', // Tailwind CSS green color
+            background: 'green',
             icon: {
               className: 'icon-[tabler--circle-check]',
               tagName: 'i',
@@ -28,7 +28,7 @@ export class NotificationService {
           },
           {
             type: 'warning',
-            background: 'red', // Tailwind CSS green color
+            background: 'red',
             icon: {
               className: 'icon-[tabler--circle-check]',
               tagName: 'i',
