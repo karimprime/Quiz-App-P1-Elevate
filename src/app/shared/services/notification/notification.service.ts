@@ -22,7 +22,7 @@ export class NotificationService {
             type: 'primary',
             background: 'green', // Tailwind CSS green color
             icon: {
-              className: 'icon-[tabler--circle-check]', // FlyonUI icon
+              className: 'icon-[tabler--circle-check]',
               tagName: 'i',
             },
           },
@@ -30,7 +30,7 @@ export class NotificationService {
             type: 'warning',
             background: 'red', // Tailwind CSS green color
             icon: {
-              className: 'icon-[tabler--circle-check]', // FlyonUI icon
+              className: 'icon-[tabler--circle-check]',
               tagName: 'i',
             },
           },
