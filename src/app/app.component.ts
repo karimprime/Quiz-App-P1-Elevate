@@ -10,7 +10,6 @@ declare global {
 
 @Component({
   selector: 'app-root',
-  standalone: true, // Mark the component as standalone
   imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],

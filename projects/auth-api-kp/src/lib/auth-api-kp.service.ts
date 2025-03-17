@@ -19,7 +19,7 @@ export class AuthApiKPService {
       map((response: any) => {
         const adaptedResponse = this._authAPIAdaptorService.adapt(response);
         if (adaptedResponse.token) {
-          this.userData.next(adaptedResponse); // Emit the token and user data
+          this.userData.next(adaptedResponse);
         }
         return adaptedResponse;
       }),

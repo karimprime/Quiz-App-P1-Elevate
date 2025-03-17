@@ -9,7 +9,6 @@ import { AuthApiKPService } from 'AuthApi-KP';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
   imports: [RouterLink, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
