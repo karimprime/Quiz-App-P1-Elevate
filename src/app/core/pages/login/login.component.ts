@@ -6,7 +6,6 @@ import { AuthService } from '../../services/auth/auth.service';
 import { NotificationService } from '../../../shared/services/notification/notification.service';
 import { AuthApiKPService } from 'AuthApi-KP';
 
-
 @Component({
   selector: 'app-login',
   imports: [RouterLink, ReactiveFormsModule],
@@ -40,6 +39,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   private loginSub!: Subscription;
 
   ngOnInit(): void {
+    // Listen for password changes
     this.loginForm.get('password')?.valueChanges.subscribe((value) => {
       this.updatePasswordStrength(value);
     });
@@ -76,6 +76,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.hasNumber.set(hasNumber);
     this.hasSpecialChar.set(hasSpecialChar);
 
+    // Calculate strengthLevel based on conditions met
     const points = [
       isMinLengthMet,
       hasLowercase,
@@ -84,7 +85,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       hasSpecialChar,
     ].filter(Boolean).length;
 
-    this.strengthLevel.set(points);
+    this.strengthLevel.set(points); // Update strengthLevel signal
   }
 
   LoginSubmit(): void {

@@ -1,11 +1,4 @@
 <form [formGroup]="loginForm" (ngSubmit)="LoginSubmit()" aria-labelledby="login-form-title">
-  <!-- Error Message
-  @if(apiError()){
-    <div class="error-dropdown alert-soft alert-error flex items-center gap-4 px-2 py-1 rounded-xl z-50 absolute top-24 right-3 transform -translate-x-1/2 transition-all" role="alert">
-      <span class="icon-[tabler--alert-triangle] size-6"></span>
-      <p><span class="text-lg font-semibold"></span>Email or Password is incorrect </p>
-    </div>
-  } -->
 
   <!-- Title -->
   <h2 class="text-2xl font-bold text-gray-900 mb-8">Sign in</h2>
@@ -25,115 +18,114 @@
     </div>
   </div>
 
-<!-- Password -->
-<div class="input-group w-full mb-8 rounded-lg bg-colorInput relative">
-  <!-- Password Input with Toggle -->
-  <div class="relative w-full rounded-lg bg-colorInput">
-    <input
-      id="toggle-password-floating"
-      [type]="showPassword() ? 'text' : 'password'"
-      class="input input-floating peer rounded-lg bg-colorInput"
-      [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
-      placeholder="Enter Password"
-      formControlName="password"
-      (focus)="showPopover()"
-      (blur)="hidePopover()"
-    />
-
-
-    <label class="input-floating-label" for="toggle-password-floating">Password</label>
-  </div>
-  <span class="input-group-text !rounded-lg !bg-colorInput">
-    <button
-      type="button"
-      (click)="togglePasswordVisibility()"
-      class="block"
-      aria-label="password toggle"
-    >
-      <span
-        class="icon-[tabler--eye] text-base-content/10 size-5 flex-shrink-0"
-        [class.hidden]="!showPassword()"
-      ></span>
-      <span
-        class="icon-[tabler--eye-off] text-base-content/80 size-5 flex-shrink-0"
-        [class.hidden]="showPassword()"
-      ></span>
-    </button>
-  </span>
-
-  <!-- Password Strength Popover -->
-  <div
-    [class.hidden]="!isPopoverVisible()"
-    class="absolute z-10 w-full p-4 bg-white shadow-lg rounded-lg mt-1 top-full left-0"
-  >
-    <div class="strength-meter flex -mx-1 mt-2.5">
-      @for (i of [1, 2, 3, 4, 5]; track i) {
-        <div
-          [class.bg-blue-600]="i <= strengthLevel()"
-          class="h-2 flex-auto rounded-full bg-blue-900 opacity-100 mx-1"
-        ></div>
-      }
+  <!-- Password -->
+  <div class="input-group w-full mb-8 rounded-lg bg-colorInput relative">
+    <!-- Password Input with Toggle -->
+    <div class="relative w-full rounded-lg bg-colorInput">
+      <input
+        id="toggle-password-floating"
+        [type]="showPassword() ? 'text' : 'password'"
+        class="input input-floating peer rounded-lg bg-colorInput"
+        [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+        placeholder="Enter Password"
+        formControlName="password"
+        (focus)="showPopover()"
+        (blur)="hidePopover()"
+      />
+      <label class="input-floating-label" for="toggle-password-floating">Password</label>
     </div>
-    <h6 class="text-base text-base-content my-2 font-semibold">Your password must contain:</h6>
-    <ul class="text-base-content/80 space-y-1 text-sm">
-      <li [class.text-success]="isMinLengthMet()" class="flex items-center gap-x-2">
+    <span class="input-group-text !rounded-lg !bg-colorInput">
+      <button
+        type="button"
+        (click)="togglePasswordVisibility()"
+        class="block"
+        aria-label="password toggle"
+      >
         <span
-          [class.hidden]="!isMinLengthMet()"
-          class="icon-[tabler--circle-check] size-5 flex-shrink-0"
+          class="icon-[tabler--eye] text-base-content/80 size-5 flex-shrink-0"
+          [class.hidden]="!showPassword()"
         ></span>
         <span
-          [class.hidden]="isMinLengthMet()"
-          class="icon-[tabler--circle-x] size-5 flex-shrink-0"
+          class="icon-[tabler--eye-off] text-base-content/80 size-5 flex-shrink-0"
+          [class.hidden]="showPassword()"
         ></span>
-        Minimum number of characters is 8.
-      </li>
-      <li [class.text-success]="hasLowercase()" class="flex items-center gap-x-2">
-        <span
-          [class.hidden]="!hasLowercase()"
-          class="icon-[tabler--circle-check] size-5 flex-shrink-0"
-        ></span>
-        <span
-          [class.hidden]="hasLowercase()"
-          class="icon-[tabler--circle-x] size-5 flex-shrink-0"
-        ></span>
-        At least one lowercase letter.
-      </li>
-      <li [class.text-success]="hasUppercase()" class="flex items-center gap-x-2">
-        <span
-          [class.hidden]="!hasUppercase()"
-          class="icon-[tabler--circle-check] size-5 flex-shrink-0"
-        ></span>
-        <span
-          [class.hidden]="hasUppercase()"
-          class="icon-[tabler--circle-x] size-5 flex-shrink-0"
-        ></span>
-        At least one uppercase letter.
-      </li>
-      <li [class.text-success]="hasNumber()" class="flex items-center gap-x-2">
-        <span
-          [class.hidden]="!hasNumber()"
-          class="icon-[tabler--circle-check] size-5 flex-shrink-0"
-        ></span>
-        <span
-          [class.hidden]="hasNumber()"
-          class="icon-[tabler--circle-x] size-5 flex-shrink-0"
-        ></span>
-        At least one number.
-      </li>
-      <li [class.text-success]="hasSpecialChar()" class="flex items-center gap-x-2">
-        <span
-          [class.hidden]="!hasSpecialChar()"
-          class="icon-[tabler--circle-check] size-5 flex-shrink-0"
-        ></span>
-        <span
-          [class.hidden]="hasSpecialChar()"
-          class="icon-[tabler--circle-x] size-5 flex-shrink-0"
-        ></span>
-        At least one special character.
-      </li>
-    </ul>
+      </button>
+    </span>
+
+<!-- Password Strength Popover -->
+<div
+  [class.hidden]="!isPopoverVisible()"
+  class="absolute z-10 w-full p-4 bg-white shadow-lg rounded-lg mt-1 top-full left-0"
+>
+  <div class="strength-meter flex -mx-1 mt-2.5">
+    @for (i of [1, 2, 3, 4, 5]; track i) {
+      <div
+        [class.bg-blue-600]="i <= strengthLevel()"
+        [class.bg-blue-900]="i > strengthLevel()"
+        class="h-2 flex-auto rounded-full mx-1"
+      ></div>
+    }
   </div>
+  <h6 class="text-base text-base-content my-2 font-semibold">Your password must contain:</h6>
+  <ul class="text-base-content/80 space-y-1 text-sm">
+    <li [class.text-success]="isMinLengthMet()" class="flex items-center gap-x-2">
+      <span
+        [class.hidden]="!isMinLengthMet()"
+        class="icon-[tabler--circle-check] size-5 flex-shrink-0"
+      ></span>
+      <span
+        [class.hidden]="isMinLengthMet()"
+        class="icon-[tabler--circle-x] size-5 flex-shrink-0"
+      ></span>
+      Minimum number of characters is 8.
+    </li>
+    <li [class.text-success]="hasLowercase()" class="flex items-center gap-x-2">
+      <span
+        [class.hidden]="!hasLowercase()"
+        class="icon-[tabler--circle-check] size-5 flex-shrink-0"
+      ></span>
+      <span
+        [class.hidden]="hasLowercase()"
+        class="icon-[tabler--circle-x] size-5 flex-shrink-0"
+      ></span>
+      At least one lowercase letter.
+    </li>
+    <li [class.text-success]="hasUppercase()" class="flex items-center gap-x-2">
+      <span
+        [class.hidden]="!hasUppercase()"
+        class="icon-[tabler--circle-check] size-5 flex-shrink-0"
+      ></span>
+      <span
+        [class.hidden]="hasUppercase()"
+        class="icon-[tabler--circle-x] size-5 flex-shrink-0"
+      ></span>
+      At least one uppercase letter.
+    </li>
+    <li [class.text-success]="hasNumber()" class="flex items-center gap-x-2">
+      <span
+        [class.hidden]="!hasNumber()"
+        class="icon-[tabler--circle-check] size-5 flex-shrink-0"
+      ></span>
+      <span
+        [class.hidden]="hasNumber()"
+        class="icon-[tabler--circle-x] size-5 flex-shrink-0"
+      ></span>
+      At least one number.
+    </li>
+    <li [class.text-success]="hasSpecialChar()" class="flex items-center gap-x-2">
+      <span
+        [class.hidden]="!hasSpecialChar()"
+        class="icon-[tabler--circle-check] size-5 flex-shrink-0"
+      ></span>
+      <span
+        [class.hidden]="hasSpecialChar()"
+        class="icon-[tabler--circle-x] size-5 flex-shrink-0"
+      ></span>
+      At least one special character.
+    </li>
+  </ul>
 </div>
+  </div>
 
   <!-- Forgot Password Link -->
   <div class="w-full text-right mb-10">
