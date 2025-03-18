@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
 import { NotificationService } from '../../../shared/services/notification/notification.service';
-import { AuthApiKPService } from 'AuthApi-KP';
+import { AuthAPISKPService } from 'AuthAPIS-KP';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +13,7 @@ import { AuthApiKPService } from 'AuthApi-KP';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  private readonly _authApiKPService = inject(AuthApiKPService);
+  private readonly _authAPISKPService = inject(AuthAPISKPService);
   private readonly _authService = inject(AuthService);
   private readonly _notificationService = inject(NotificationService);
 
@@ -94,7 +94,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.isLoading.set(true);
     this.apiError.set('');
 
-    this.loginSub = this._authApiKPService.login(this.loginForm.value).subscribe({
+    this.loginSub = this._authAPISKPService.login(this.loginForm.value).subscribe({
       next: (res) => {
         if ('token' in res && res.message === 'success') {
           this._authService.userData.next(res);

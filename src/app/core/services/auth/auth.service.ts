@@ -3,7 +3,8 @@ import { PlatFormService } from '../platform/platform.service';
 import { BehaviorSubject } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
-import { AuthApiKPService } from 'AuthApi-KP';
+import { AuthAPISKPService } from 'AuthAPIS-KP';
+
 
 @Injectable({
   providedIn: 'root'
@@ -11,13 +12,13 @@ import { AuthApiKPService } from 'AuthApi-KP';
 export class AuthService {
   private readonly _router = inject(Router);
   private readonly _platformService = inject(PlatFormService);
-  private readonly _authApiKPService = inject(AuthApiKPService);
+  private readonly _authAPISKPService = inject(AuthAPISKPService);
 
   private readonly _userTokenKey = 'userToken';
   userData: BehaviorSubject<any | null> = new BehaviorSubject<any | null>(null);
 
   constructor() {
-    this._authApiKPService.userData.subscribe((data) => {
+    this._authAPISKPService.userData.subscribe((data) => {
       if (data && data.token) {
         this._platformService.safeLocalStorageSet(this._userTokenKey, data.token);
         this._updateUserData(data.token);

@@ -4,9 +4,9 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "AuthApi-KP": [
-        "./dist/auth-api-kp"
-      ]
+      "AuthAPIS-KP": [
+        "./dist/auth-apis-kp"
+      ],
     },
     "outDir": "./dist/out-tsc",
     "strict": true,

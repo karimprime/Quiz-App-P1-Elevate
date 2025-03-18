@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AuthApiKPService } from './auth-api-kp.service';
+import { AuthAPISKPService } from './auth-apis-kp.service';
 
-describe('AuthApiKPService', () => {
-  let service: AuthApiKPService;
+describe('AuthAPISKPService', () => {
+  let service: AuthAPISKPService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(AuthApiKPService);
+    service = TestBed.inject(AuthAPISKPService);
   });
 
   it('should be created', () => {
