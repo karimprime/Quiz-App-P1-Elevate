@@ -3,7 +3,7 @@ import { PlatFormService } from '../platform/platform.service';
 import { BehaviorSubject } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
-import { AuthAPISKPService } from 'AuthAPIS-KP';
+import { AuthAPISKPService } from 'auth-apis-kp';
 
 
 @Injectable({

@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
 import { NotificationService } from '../../../shared/services/notification/notification.service';
-import { AuthAPISKPService } from 'AuthAPIS-KP';
+import { AuthAPISKPService } from 'auth-apis-kp';
 
 @Component({
   selector: 'app-login',
