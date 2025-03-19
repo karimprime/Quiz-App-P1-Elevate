@@ -107,23 +107,23 @@
         }
       }
     },
-    "AuthAPIS-KP": {
+    "auth-api-kp": {
       "projectType": "library",
-      "root": "projects/auth-apis-kp",
-      "sourceRoot": "projects/auth-apis-kp/src",
+      "root": "projects/auth-api-kp",
+      "sourceRoot": "projects/auth-api-kp/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/auth-apis-kp/ng-package.json"
+            "project": "projects/auth-api-kp/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/auth-apis-kp/tsconfig.lib.prod.json"
+              "tsConfig": "projects/auth-api-kp/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/auth-apis-kp/tsconfig.lib.json"
+              "tsConfig": "projects/auth-api-kp/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -131,7 +131,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/auth-apis-kp/tsconfig.spec.json",
+            "tsConfig": "projects/auth-api-kp/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"

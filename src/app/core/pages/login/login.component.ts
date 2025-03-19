@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
 import { NotificationService } from '../../../shared/services/notification/notification.service';
-import { AuthAPISKPService } from 'auth-apis-kp';
+import { AuthApiKpService } from 'auth-api-kp';
 
 @Component({
   selector: 'app-login',
@@ -13,14 +13,16 @@ import { AuthAPISKPService } from 'auth-apis-kp';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  private readonly _authAPISKPService = inject(AuthAPISKPService);
+  private readonly _authApiKpService = inject(AuthApiKpService);
   private readonly _authService = inject(AuthService);
   private readonly _notificationService = inject(NotificationService);
 
   apiError = signal<string>('');
   isLoading = signal<boolean>(false);
+
   showPassword = signal<boolean>(false);
   isPopoverVisible = signal<boolean>(false);
+
   strengthLevel = signal<number>(0);
   isMinLengthMet = signal<boolean>(false);
   hasLowercase = signal<boolean>(false);
@@ -29,8 +31,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   hasSpecialChar = signal<boolean>(false);
 
   loginForm: FormGroup = new FormGroup({
-    email: new FormControl(null, [Validators.required, Validators.email]),
-    password: new FormControl(null, [
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [
       Validators.required,
       Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'),
     ]),
@@ -85,7 +87,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       hasSpecialChar,
     ].filter(Boolean).length;
 
-    this.strengthLevel.set(points); // Update strengthLevel signal
+    this.strengthLevel.set(points);
   }
 
   LoginSubmit(): void {
@@ -94,7 +96,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.isLoading.set(true);
     this.apiError.set('');
 
-    this.loginSub = this._authAPISKPService.login(this.loginForm.value).subscribe({
+    this.loginSub = this._authApiKpService.login(this.loginForm.value).subscribe({
       next: (res) => {
         if ('token' in res && res.message === 'success') {
           this._authService.userData.next(res);

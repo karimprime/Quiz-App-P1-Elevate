@@ -1,22 +1,31 @@
-<form class="">
-  <h2 class="text-2xl font-bold text-gray-900 mb-8">Verify code</h2>
+<form [formGroup]="verifyCodeForm" (ngSubmit)="verifyCodeSubmit()" aria-labelledby="verify-code-form-title">
+  <h2 id="verify-code-form-title" class="text-2xl font-bold text-gray-900 mb-8">Verify Code</h2>
 
-
+  <!-- Verify Code -->
   <div class="w-full mb-8">
     <div class="relative w-full">
-      <input id="toggle-code-floating" type="text" class="input input-floating peer rounded-lg bg-colorInput" placeholder="Enter Code" />
-      <label class="input-floating-label" for="toggle-code-floating">Verify Code</label>
+      <input id="resetCode" type="text" class="input input-floating peer rounded-lg bg-colorInput"
+        [class.is-invalid]="verifyCodeForm.get('resetCode')?.invalid && verifyCodeForm.get('resetCode')?.touched"
+        placeholder="Enter Reset Code" formControlName="resetCode" aria-describedby="resetCode-error" />
+      <label class="input-floating-label" for="resetCode">Enter Code</label>
     </div>
   </div>
 
-  <!-- Forgot Password Link -->
+  <!-- Resend Code Link -->
   <div class="w-full text-right mb-10">
     <span class="font-medium">Didn't receive a code?<a
-        class="text-base text-colorNavLink hover:underline cursor-pointer"> Resend</a></span>
+        class="text-base text-colorNavLink hover:underline cursor-pointer" routerLink="/auth-layout/forget-password">
+        Resend</a></span>
   </div>
-  <!-- Sign In Button -->
-  <button type="submit"
-    class="w-full bg-colorNavLink text-white py-2 px-4 rounded-2xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-    Verify
+
+  <!-- Verify Button -->
+  <button [disabled]="verifyCodeForm.invalid || isLoading()" type="submit"
+    class="w-full bg-colorNavLink text-white py-2 px-4 rounded-2xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-blue-900"
+    aria-live="polite">
+    @if (isLoading()) {
+    <i class="fa-solid fa-spinner fa-spin"></i>
+    } @else {
+    <span>Verify</span>
+    }
   </button>
-  </form>
+</form>

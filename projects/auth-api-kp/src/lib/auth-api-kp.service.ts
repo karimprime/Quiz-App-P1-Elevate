@@ -7,7 +7,7 @@ import { AuthEndPoint } from './enums/AuthAPI.endPoint';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthAPISKPService {
+export class AuthApiKpService {
 
   private readonly _httpClient = inject(HttpClient);
   private readonly _authAPIAdaptorService = inject(AuthAPIAdaptorService);
@@ -39,6 +39,30 @@ export class AuthAPISKPService {
       catchError((error) => {
         console.error('Register API Error:', error);
         return of({ error: error.message || 'An error occurred during registration.' });
+      })
+    );
+  }
+
+  forgetPassword(data: any): Observable<any> {
+    return this._httpClient.post<any>(AuthEndPoint.FORGET_PASSWORD, data).pipe(
+      map((response: any) => {
+        return response;
+      }),
+      catchError((error) => {
+        console.error('Forget Password API Error:', error);
+        return of({ error: error.message || 'An error occurred during forget password.' });
+      })
+    );
+  }
+
+  verifyCode(data: any): Observable<any> {
+    return this._httpClient.post<any>(AuthEndPoint.VERIFY_CODE, data).pipe(
+      map((response: any) => {
+        return response;
+      }),
+      catchError((error) => {
+        console.error('Verify Code API Error:', error);
+        return of({ error: error.message || 'An error occurred during verify code.' });
       })
     );
   }

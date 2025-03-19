@@ -4,7 +4,7 @@ import { Adaptor } from '../interface/adaptor';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthAPIAdaptorService implements Adaptor{
+export class AuthAPIAdaptorService implements Adaptor {
 
   constructor() { }
 

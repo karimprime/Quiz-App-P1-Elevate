@@ -1,122 +1,151 @@
-<form class="">
-<h2 class="text-2xl font-bold text-gray-900 mb-8">Sign in</h2>
+<form [formGroup]="registerForm" (ngSubmit)="RegisterSubmit()" aria-labelledby="register-form-title">
+  <h2 id="register-form-title" class="text-2xl font-bold text-gray-900 mb-8">Sign Up</h2>
 
-<div class="w-full mb-8">
-  <div class="relative w-full">
-    <input id="toggle-UserName-floating" type="text" class="input input-floating peer rounded-lg bg-colorInput" placeholder="Enter Your UserName" />
-    <label class="input-floating-label" for="toggle-UserName-floating">UserName</label>
+  <!-- UserName -->
+  <div class="w-full mb-8">
+    <div class="relative w-full">
+      <input id="username" type="text" class="input input-floating peer rounded-lg bg-colorInput"
+        [class.is-invalid]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
+        placeholder="Enter Your UserName" formControlName="username" aria-describedby="username-error" />
+      <label class="input-floating-label" for="username">UserName</label>
+    </div>
   </div>
-</div>
 
-<div class="w-full mb-8">
-  <div class="relative w-full">
-    <input id="toggle-fName-floating" type="text" class="input input-floating peer rounded-lg bg-colorInput" placeholder="Enter Your First Name" />
-    <label class="input-floating-label" for="toggle-fName-floating">First Name</label>
+  <!-- firstName -->
+  <div class="w-full mb-8">
+    <div class="relative w-full">
+      <input id="firstName" type="text" class="input input-floating peer rounded-lg bg-colorInput"
+        [class.is-invalid]="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched"
+        placeholder="Enter Your First Name" formControlName="firstName" aria-describedby="firstName-error" />
+      <label class="input-floating-label" for="firstName">First Name</label>
+    </div>
   </div>
-</div>
 
-<div class="w-full mb-8">
-  <div class="relative w-full">
-    <input id="toggle-lName-floating" type="text" class="input input-floating peer rounded-lg bg-colorInput" placeholder="Enter Your Last Name" />
-    <label class="input-floating-label" for="toggle-lName-floating">Last Name</label>
+  <!-- lastName -->
+  <div class="w-full mb-8">
+    <div class="relative w-full">
+      <input id="lastName" type="text" class="input input-floating peer rounded-lg bg-colorInput"
+        [class.is-invalid]="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched"
+        placeholder="Enter Your Last Name" formControlName="lastName" aria-describedby="lastName-error" />
+      <label class="input-floating-label" for="lastName">Last Name</label>
+    </div>
   </div>
-</div>
 
-<div class="w-full mb-8">
-  <div class="relative w-full">
-    <input id="toggle-Email-floating" type="email" class="input input-floating peer rounded-lg bg-colorInput" placeholder="Enter Your Email" />
-    <label class="input-floating-label" for="toggle-Email-floating">Email</label>
+  <!-- Email -->
+  <div class="w-full mb-8">
+    <div class="relative w-full">
+      <input id="email" type="email" class="input input-floating peer rounded-lg bg-colorInput"
+        [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+        placeholder="Enter Your Email" formControlName="email" aria-describedby="email-error" />
+      <label class="input-floating-label" for="email">Email</label>
+    </div>
   </div>
-</div>
 
-<!-- Password -->
-<div class="input-group w-full mb-8 rounded-lg bg-colorInput">
-  <div class="relative w-full rounded-lg bg-colorInput">
-    <input
-      id="toggle-password-floating"
-      type="password"
-      class="input input-floating peer rounded-lg bg-colorInput"
-      placeholder="Enter Password"
-    />
-    <label class="input-floating-label" for="toggle-password-floating">Password</label>
-    <div id="password-popover-content" class="card absolute z-10 w-full hidden p-4">
-      <div
-        data-strong-password='{
-          "target": "#toggle-password-floating",
-          "hints": "#password-popover-content",
-          "stripClasses": "strong-password:opacity-100 strong-password-accepted:bg-teal-500 h-2 flex-auto rounded-full bg-primary opacity-40 mx-1",
-          "mode": "popover"
-        }'
-        class="-mx-1 mt-2.5 flex"
-      >
+  <!-- Phone -->
+  <div class="w-full mb-8">
+    <div class="relative w-full">
+      <input id="phone" type="tel" class="input input-floating peer rounded-lg bg-colorInput"
+        [class.is-invalid]="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched"
+        placeholder="Enter Your Phone" formControlName="phone" aria-describedby="phone-error" />
+      <label class="input-floating-label" for="phone">Phone</label>
+    </div>
+  </div>
+
+  <!-- Password -->
+  <div class="input-group w-full mb-8 rounded-lg bg-colorInput relative">
+    <!-- Password Input with Toggle -->
+    <div class="relative w-full rounded-lg bg-colorInput">
+      <input id="toggle-password-floating" [type]="showPassword() ? 'text' : 'password'"
+        class="input input-floating peer rounded-lg bg-colorInput"
+        [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+        placeholder="Enter Password" formControlName="password" (focus)="showPopover()" (blur)="hidePopover()" />
+      <label class="input-floating-label" for="toggle-password-floating">Password</label>
+    </div>
+    <span class="input-group-text !rounded-lg !bg-colorInput">
+      <button type="button" (click)="togglePasswordVisibility()" class="block" aria-label="password toggle">
+        <span class="icon-[tabler--eye] text-base-content/80 size-5 flex-shrink-0"
+          [class.hidden]="!showPassword()"></span>
+        <span class="icon-[tabler--eye-off] text-base-content/80 size-5 flex-shrink-0"
+          [class.hidden]="showPassword()"></span>
+      </button>
+    </span>
+
+    <!-- Password Strength Popover -->
+    <div [class.hidden]="!isPopoverVisible()"
+      class="absolute z-10 w-full p-4 bg-white shadow-lg rounded-lg mt-1 top-full left-0">
+      <div class="strength-meter flex -mx-1 mt-2.5">
+        @for (i of [1, 2, 3, 4, 5]; track i) {
+        <div [class.bg-blue-600]="i <= strengthLevel()" [class.bg-blue-900]="i > strengthLevel()"
+          class="h-2 flex-auto rounded-full mx-1"></div>
+        }
       </div>
       <h6 class="text-base text-base-content my-2 font-semibold">Your password must contain:</h6>
       <ul class="text-base-content/80 space-y-1 text-sm">
-        <li data-pw-strength-rule="min-length" class="strong-password-active:text-success flex items-center gap-x-2">
-          <span class="icon-[tabler--circle-check] hidden size-5 flex-shrink-0" data-check></span>
-          <span class="icon-[tabler--circle-x] hidden size-5 flex-shrink-0" data-uncheck></span>
-          Minimum number of characters is 6.
+        <li [class.text-success]="isMinLengthMet()" class="flex items-center gap-x-2">
+          <span [class.hidden]="!isMinLengthMet()" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+          <span [class.hidden]="isMinLengthMet()" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+          Minimum number of characters is 8.
         </li>
-        <li data-pw-strength-rule="lowercase" class="strong-password-active:text-success flex items-center gap-x-2">
-          <span class="icon-[tabler--circle-check] hidden size-5 flex-shrink-0" data-check></span>
-          <span class="icon-[tabler--circle-x] hidden size-5 flex-shrink-0" data-uncheck></span>
-          Should contain lowercase.
+        <li [class.text-success]="hasLowercase()" class="flex items-center gap-x-2">
+          <span [class.hidden]="!hasLowercase()" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+          <span [class.hidden]="hasLowercase()" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+          At least one lowercase letter.
         </li>
-        <li data-pw-strength-rule="uppercase" class="strong-password-active:text-success flex items-center gap-x-2">
-          <span class="icon-[tabler--circle-check] hidden size-5 flex-shrink-0" data-check></span>
-          <span class="icon-[tabler--circle-x] hidden size-5 flex-shrink-0" data-uncheck></span>
-          Should contain uppercase.
+        <li [class.text-success]="hasUppercase()" class="flex items-center gap-x-2">
+          <span [class.hidden]="!hasUppercase()" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+          <span [class.hidden]="hasUppercase()" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+          At least one uppercase letter.
         </li>
-        <li data-pw-strength-rule="numbers" class="strong-password-active:text-success flex items-center gap-x-2">
-          <span class="icon-[tabler--circle-check] hidden size-5 flex-shrink-0" data-check></span>
-          <span class="icon-[tabler--circle-x] hidden size-5 flex-shrink-0" data-uncheck></span>
-          Should contain numbers.
+        <li [class.text-success]="hasNumber()" class="flex items-center gap-x-2">
+          <span [class.hidden]="!hasNumber()" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+          <span [class.hidden]="hasNumber()" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+          At least one number.
         </li>
-        <li data-pw-strength-rule="special-characters" class="strong-password-active:text-success flex items-center gap-x-2">
-          <span class="icon-[tabler--circle-check] hidden size-5 flex-shrink-0" data-check></span>
-          <span class="icon-[tabler--circle-x] hidden size-5 flex-shrink-0" data-uncheck></span>
-          Should contain special characters.
+        <li [class.text-success]="hasSpecialChar()" class="flex items-center gap-x-2">
+          <span [class.hidden]="!hasSpecialChar()" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+          <span [class.hidden]="hasSpecialChar()" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+          At least one special character.
         </li>
       </ul>
     </div>
   </div>
-  <span class="input-group-text !rounded-lg !bg-colorInput">
-    <button
-      type="button"
-      data-toggle-password='{ "target": "#toggle-password-floating" }'
-      class="block"
-      aria-label="password toggle"
-    >
-      <span class="icon-[tabler--eye] text-base-content/80 password-active:block hidden size-5 flex-shrink-0"></span>
-      <span class="icon-[tabler--eye-off] text-base-content/80 password-active:hidden block size-5 flex-shrink-0"></span>
-    </button>
-  </span>
-</div>
 
-<!-- Confirm Password -->
-<div class="input-group w-full mb-8 rounded-lg bg-colorInput">
-  <div class="relative w-full">
-    <input id="toggle-rePassword-floating" type="password" class="input input-floating peer rounded-lg bg-colorInput" placeholder="Confirm Password" />
-    <label class="input-floating-label" for="toggle-rePassword-floating">Confirm Password</label>
+
+  <!-- Confirm Password -->
+  <div class="input-group w-full mb-8 rounded-lg bg-colorInput relative">
+    <!-- Confirm Password Input with Toggle -->
+    <div class="relative w-full rounded-lg bg-colorInput">
+      <input id="toggle-confirm-password-floating" [type]="showConfirmPassword() ? 'text' : 'password'"
+        class="input input-floating peer rounded-lg bg-colorInput"
+        [class.is-invalid]="registerForm.errors && registerForm.touched && registerForm.get('rePassword')?.touched"
+        placeholder="Please Confirm Your Password" formControlName="rePassword" />
+      <label class="input-floating-label" for="toggle-confirm-password-floating">Confirm Password</label>
+    </div>
+
+    <span class="input-group-text !rounded-lg !bg-colorInput">
+      <button type="button" (click)="toggleConfirmPasswordVisibility()" class="block"
+        aria-label="confirm password toggle">
+        <span class="icon-[tabler--eye] text-base-content/80 size-5 flex-shrink-0"
+          [class.hidden]="!showConfirmPassword()"></span>
+        <span class="icon-[tabler--eye-off] text-base-content/80 size-5 flex-shrink-0"
+          [class.hidden]="showConfirmPassword()"></span>
+      </button>
+    </span>
   </div>
-  <span class="input-group-text !bg-colorInput !rounded-lg">
-    <button type="button" data-toggle-password='{ "target": "#toggle-rePassword-floating" }' class="block" aria-label="password toggle">
-      <span class="icon-[tabler--eye] text-base-content/80 password-active:block hidden size-5 flex-shrink-0"></span>
-      <span class="icon-[tabler--eye-off] text-base-content/80 password-active:hidden block size-5 flex-shrink-0"></span>
-    </button>
-  </span>
-</div>
-
 
   <!-- Back to Login -->
-  <div class="w-full text-center mb-10">
+  <div class="w-full text-center mb-6">
     <span class="font-medium">Already have an account?<a routerLink="/auth-layout/login"
         class="text-base text-colorNavLink hover:underline cursor-pointer"> Login</a></span>
   </div>
 
-  <!-- Sign up Button -->
-  <button type="submit"
-    class="w-full bg-colorNavLink text-white py-2 px-4 rounded-2xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-    Sign up
+  <!-- Sign Up Button -->
+  <button [disabled]="registerForm.invalid || isLoading()" type="submit"
+    class="w-full bg-colorNavLink text-white py-2 px-4 rounded-2xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-blue-900">
+    @if (isLoading()) {
+    <i class="fa-solid fa-spinner fa-spin"></i>
+    } @else {
+    <span>Sign up</span>
+    }
   </button>
 </form>
