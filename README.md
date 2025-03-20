@@ -14,6 +14,7 @@
     └── auth-api-kp
     │   ├── README.md
     │   ├── ng-package.json
+    │   ├── package-lock.json
     │   ├── package.json
     │   ├── src
     │       ├── lib
@@ -110,6 +111,7 @@
 ├── tsconfig.app.json
 ├── tsconfig.json
 └── tsconfig.spec.json
+
 
 
 ```
