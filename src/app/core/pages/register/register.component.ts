@@ -7,7 +7,6 @@ import { Subscription } from 'rxjs';
 import { AuthApiKpService } from 'auth-api-kp';
 @Component({
   selector: 'app-register',
-  standalone: true,
   imports: [RouterLink, ReactiveFormsModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],

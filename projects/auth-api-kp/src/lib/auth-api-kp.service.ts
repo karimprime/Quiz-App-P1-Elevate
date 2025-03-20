@@ -67,6 +67,18 @@ export class AuthApiKpService {
     );
   }
 
+  resetPassword(data: any): Observable<any> {
+    return this._httpClient.put<any>(AuthEndPoint.RESET_PASSWORD, data).pipe(
+      map((response: any) => {
+        return response;
+      }),
+      catchError((error) => {
+        console.error('Reset Password API Error:', error);
+        return of({ error: error.message || 'An error occurred during reset password.' });
+      })
+    );
+  }
+
   logout(): Observable<any> {
     return this._httpClient.post(AuthEndPoint.LOGOUT, {}).pipe(
       map(() => {
