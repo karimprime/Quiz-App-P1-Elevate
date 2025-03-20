@@ -50,7 +50,8 @@ export class ForgetPasswordComponent implements OnDestroy {
       error: (err) => {
         console.error('Forgot password request failed', err);
         this.apiError.set('An error occurred. Please try again.');
-        this._notificationService.error('Could not send verification code. Please check your email and try again.');
+        this._notificationService.error(this.apiError());
+
       },
       complete: () => {
         this.isLoading.set(false);

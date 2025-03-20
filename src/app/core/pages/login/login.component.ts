@@ -99,15 +99,13 @@ export class LoginComponent implements OnInit, OnDestroy {
       next: (res) => {
         if ('token' in res && res.message === 'success') {
           this._authService.userData.next(res);
-          console.log('Login success', res);
           this._notificationService.success('Login successful!');
         } else {
           this.apiError.set('Invalid response from server.');
-          this._notificationService.error('Email or Password is incorrect!');
+          this._notificationService.error(this.apiError());
         }
       },
       error: (err) => {
-        console.error('Login failed', err);
         this._notificationService.error('Email or Password is incorrect!');
       },
       complete: () => {

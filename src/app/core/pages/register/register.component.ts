@@ -117,7 +117,7 @@ export class RegisterComponent implements OnDestroy {
       error: (err) => {
         console.error('Registration failed', err);
         this.apiError.set('Registration failed. Please check your details and try again.');
-        this._notificationService.error('Registration failed. Please check your details and try again.');
+        this._notificationService.error(this.apiError());
       },
       complete: () => {
         this.isLoading.set(false);

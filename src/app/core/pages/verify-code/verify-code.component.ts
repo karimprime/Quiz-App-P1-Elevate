@@ -43,7 +43,6 @@ export class VerifyCodeComponent implements OnDestroy {
 
     this.verifySub = this._authApiKpService.verifyCode(data).subscribe({
       next: (res) => {
-        console.log('API Response:', res);
         if (res && res.status === 'Success') {
           this._notificationService.success('Code verified successfully!');
           this._router.navigate(['/auth-layout/set-password']);
@@ -54,8 +53,8 @@ export class VerifyCodeComponent implements OnDestroy {
       },
       error: (err) => {
         console.error('Verify code request failed', err);
-        this.apiError.set('An error occurred. Please try again.');
-        this._notificationService.error('Could not verify code. Please try again.');
+        this.apiError.set(err.error?.message || 'An error occurred. Please try again.');
+        this._notificationService.error(this.apiError());
       },
       complete: () => {
         this.isLoading.set(false);
