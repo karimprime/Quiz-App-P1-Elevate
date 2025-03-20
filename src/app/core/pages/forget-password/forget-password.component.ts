@@ -1,9 +1,9 @@
+import { AuthApiKpService } from 'auth-api-kp';
 import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../../../shared/services/notification/notification.service';
 import { Subscription } from 'rxjs';
-import { AuthApiKpService } from 'auth-api-kp';
 
 @Component({
   selector: 'app-forget-password',

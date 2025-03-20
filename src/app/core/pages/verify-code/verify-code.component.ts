@@ -5,7 +5,6 @@ import { Router, RouterLink } from '@angular/router';
 import { NotificationService } from '../../../shared/services/notification/notification.service';
 import { Subscription } from 'rxjs';
 import { AuthApiKpService } from 'auth-api-kp';
-
 @Component({
   selector: 'app-verify-code',
   standalone: true,

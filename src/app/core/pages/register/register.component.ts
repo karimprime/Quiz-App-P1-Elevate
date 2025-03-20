@@ -5,7 +5,6 @@ import { AuthService } from '../../services/auth/auth.service';
 import { NotificationService } from '../../../shared/services/notification/notification.service';
 import { Subscription } from 'rxjs';
 import { AuthApiKpService } from 'auth-api-kp';
-
 @Component({
   selector: 'app-register',
   standalone: true,
