@@ -5,8 +5,10 @@ import { RouterLink, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { AuthApiKpService } from 'auth-api-kp';
-import { AuthService } from '../../services/auth/auth.service';
+
 import { NotificationService } from '../../../shared/services/notification/notification.service';
+import { registerFailure, registerSuccess } from '../../../store/auth.actions';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-register',
@@ -16,7 +18,7 @@ import { NotificationService } from '../../../shared/services/notification/notif
 })
 export class RegisterComponent {
   private readonly _authApiKpService = inject(AuthApiKpService);
-  private readonly _authService = inject(AuthService);
+    private readonly _store = inject(Store);
   private readonly _router = inject(Router);
   private readonly _notificationService = inject(NotificationService);
 
@@ -107,24 +109,22 @@ export class RegisterComponent {
     this.apiError.set('');
 
     this.registerSub = this._authApiKpService.register(this.registerForm.value).subscribe({
-      next: (res) => {
-        if ('token' in res && res.message === 'success') {
-          this._authService.userData.next(res);
-          this._notificationService.success('Registration successful!');
-          this._router.navigate(['/auth-layout/login']);
-        } else {
-          this.apiError.set('Invalid response from server.');
-          this._notificationService.error('Registration failed. Please check your details and try again.');
+
+        next: (res) => {
+              if ('token' in res && res.message === 'success') {
+                this._store.dispatch(registerSuccess(res));
+                this._router.navigate(['/auth-layout/login']);
+              } else {
+                this.apiError.set('Registration failed. Please check your details and try again.');
+                this._store.dispatch(registerFailure({ error: this.apiError() }));
+              }
+            },
+            error: (err) => {
+              this._store.dispatch(registerFailure({ error: 'Registration failed. Please check your details and try again.' }));
+            },
+            complete: () => {
+              this.isLoading.set(false);
+            },
+          });
         }
-      },
-      error: (err) => {
-        console.error('Registration failed', err);
-        this.apiError.set('Registration failed. Please check your details and try again.');
-        this._notificationService.error(this.apiError());
-      },
-      complete: () => {
-        this.isLoading.set(false);
-      },
-    });
-  }
 }

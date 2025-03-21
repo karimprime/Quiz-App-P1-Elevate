@@ -1,12 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-
 import { AuthApiKpService } from 'auth-api-kp';
-import { AuthService } from '../../services/auth/auth.service';
-import { NotificationService } from '../../../shared/services/notification/notification.service';
+import { loginFailure, loginSuccess } from '../../../store/auth.actions';
 
 @Component({
   selector: 'app-login',
@@ -16,8 +14,7 @@ import { NotificationService } from '../../../shared/services/notification/notif
 })
 export class LoginComponent {
   private readonly _authApiKpService = inject(AuthApiKpService);
-  private readonly _authService = inject(AuthService);
-  private readonly _notificationService = inject(NotificationService);
+  private readonly _store = inject(Store);
 
   apiError = signal<string>('');
   isLoading = signal<boolean>(false);
@@ -43,7 +40,6 @@ export class LoginComponent {
   private loginSub!: Subscription;
 
   ngOnInit(): void {
-    // Listen for password changes
     this.loginForm.get('password')?.valueChanges.subscribe((value) => {
       this.updatePasswordStrength(value);
     });
@@ -80,7 +76,6 @@ export class LoginComponent {
     this.hasNumber.set(hasNumber);
     this.hasSpecialChar.set(hasSpecialChar);
 
-    // Calculate strengthLevel based on conditions met
     const points = [
       isMinLengthMet,
       hasLowercase,
@@ -101,15 +96,14 @@ export class LoginComponent {
     this.loginSub = this._authApiKpService.login(this.loginForm.value).subscribe({
       next: (res) => {
         if ('token' in res && res.message === 'success') {
-          this._authService.userData.next(res);
-          this._notificationService.success('Login successful!');
+          this._store.dispatch(loginSuccess({ token: res.token }));
         } else {
           this.apiError.set('Email or Password is incorrect!');
-          this._notificationService.error(this.apiError());
+          this._store.dispatch(loginFailure({ error: this.apiError() }));
         }
       },
       error: (err) => {
-        this._notificationService.error('Email or Password is incorrect!');
+        this._store.dispatch(loginFailure({ error: 'Email or Password is incorrect!' }));
       },
       complete: () => {
         this.isLoading.set(false);
