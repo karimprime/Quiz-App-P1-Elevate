@@ -4,9 +4,8 @@ const { addDynamicIconSelectors } = require("@iconify/tailwind");
 module.exports = {
   content: [
     "./src/**/*.{html,ts}",
-    "./node_modules/flyonui/dist/js/*.js", // Ensure this path is correct
+    "./node_modules/flyonui/dist/js/*.js",
   ],
-  darkMode: "selector", // Use 'selector' for manual dark mode toggling
   theme: {
     extend: {
       colors: {
@@ -22,7 +21,7 @@ module.exports = {
     },
   },
   plugins: [
-    require("flyonui"), 
+    require("flyonui"),
     require("flyonui/plugin"),
     addDynamicIconSelectors(),
   ],
