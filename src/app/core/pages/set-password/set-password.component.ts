@@ -1,9 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+
+import { Subscription } from 'rxjs';
+
 import { AuthApiKpService } from 'auth-api-kp';
 import { NotificationService } from '../../../shared/services/notification/notification.service';
-import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'app-set-password',

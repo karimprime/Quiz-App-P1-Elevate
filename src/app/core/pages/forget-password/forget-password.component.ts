@@ -1,9 +1,12 @@
-import { AuthApiKpService } from 'auth-api-kp';
-import { Component, inject, OnDestroy, signal } from '@angular/core';
+
+import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { NotificationService } from '../../../shared/services/notification/notification.service';
+
 import { Subscription } from 'rxjs';
+
+import { AuthApiKpService } from 'auth-api-kp';
+import { NotificationService } from '../../../shared/services/notification/notification.service';
 
 @Component({
   selector: 'app-forget-password',
@@ -12,7 +15,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './forget-password.component.html',
   styleUrls: ['./forget-password.component.scss'],
 })
-export class ForgetPasswordComponent implements OnDestroy {
+export class ForgetPasswordComponent {
   private readonly _authApiKpService = inject(AuthApiKpService);
   private readonly _router = inject(Router);
   private readonly _notificationService = inject(NotificationService);

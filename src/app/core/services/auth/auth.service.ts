@@ -1,10 +1,11 @@
 import { inject, Injectable } from '@angular/core';
-import { PlatFormService } from '../platform/platform.service';
+import { Router } from '@angular/router';
+
 import { BehaviorSubject } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
-import { Router } from '@angular/router';
-import { AuthApiKpService } from 'auth-api-kp';
 
+import { AuthApiKpService } from 'auth-api-kp';
+import { PlatFormService } from '../platform/platform.service';
 
 @Injectable({
   providedIn: 'root'

@@ -1,17 +1,20 @@
-import { Component, inject, signal, OnDestroy } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
+
+import { Subscription } from 'rxjs';
+
+import { AuthApiKpService } from 'auth-api-kp';
 import { AuthService } from '../../services/auth/auth.service';
 import { NotificationService } from '../../../shared/services/notification/notification.service';
-import { Subscription } from 'rxjs';
-import { AuthApiKpService } from 'auth-api-kp';
+
 @Component({
   selector: 'app-register',
   imports: [RouterLink, ReactiveFormsModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent implements OnDestroy {
+export class RegisterComponent {
   private readonly _authApiKpService = inject(AuthApiKpService);
   private readonly _authService = inject(AuthService);
   private readonly _router = inject(Router);

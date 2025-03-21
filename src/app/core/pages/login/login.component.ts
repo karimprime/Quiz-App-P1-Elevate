@@ -1,17 +1,20 @@
-import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+
 import { Subscription } from 'rxjs';
+
+import { AuthApiKpService } from 'auth-api-kp';
 import { AuthService } from '../../services/auth/auth.service';
 import { NotificationService } from '../../../shared/services/notification/notification.service';
-import { AuthApiKpService } from 'auth-api-kp';
+
 @Component({
   selector: 'app-login',
   imports: [RouterLink, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent {
   private readonly _authApiKpService = inject(AuthApiKpService);
   private readonly _authService = inject(AuthService);
   private readonly _notificationService = inject(NotificationService);
@@ -101,7 +104,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this._authService.userData.next(res);
           this._notificationService.success('Login successful!');
         } else {
-          this.apiError.set('Invalid response from server.');
+          this.apiError.set('Email or Password is incorrect!');
           this._notificationService.error(this.apiError());
         }
       },

@@ -1,18 +1,20 @@
 
-import { Component, inject, OnDestroy, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { NotificationService } from '../../../shared/services/notification/notification.service';
+
 import { Subscription } from 'rxjs';
+
 import { AuthApiKpService } from 'auth-api-kp';
+import { NotificationService } from '../../../shared/services/notification/notification.service';
+
 @Component({
   selector: 'app-verify-code',
-  standalone: true,
   imports: [RouterLink, ReactiveFormsModule],
   templateUrl: './verify-code.component.html',
   styleUrls: ['./verify-code.component.scss'],
 })
-export class VerifyCodeComponent implements OnDestroy {
+export class VerifyCodeComponent {
   private readonly _authApiKpService = inject(AuthApiKpService);
   private readonly _router = inject(Router);
   private readonly _notificationService = inject(NotificationService);

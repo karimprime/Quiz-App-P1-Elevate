@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { AuthAPIAdaptorService } from './adaptor/auth-api.adaptor';
+
 import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
+
+import { AuthAPIAdaptorService } from './adaptor/auth-api.adaptor';
 import { AuthEndPoint } from './enums/AuthAPI.endPoint';
 
 @Injectable({
@@ -24,7 +26,6 @@ export class AuthApiKpService {
         return adaptedResponse;
       }),
       catchError((error) => {
-        console.error('Login API Error:', error);
         return of({ error: error.message || 'An error occurred during login.' });
       })
     );
@@ -37,7 +38,6 @@ export class AuthApiKpService {
         return adaptedResponse;
       }),
       catchError((error) => {
-        console.error('Register API Error:', error);
         return of({ error: error.message || 'An error occurred during registration.' });
       })
     );
@@ -49,7 +49,6 @@ export class AuthApiKpService {
         return response;
       }),
       catchError((error) => {
-        console.error('Forget Password API Error:', error);
         return of({ error: error.message || 'An error occurred during forget password.' });
       })
     );
@@ -61,7 +60,6 @@ export class AuthApiKpService {
         return response;
       }),
       catchError((error) => {
-        console.error('Verify Code API Error:', error);
         return of({ error: error.message || 'An error occurred during verify code.' });
       })
     );
@@ -73,7 +71,6 @@ export class AuthApiKpService {
         return response;
       }),
       catchError((error) => {
-        console.error('Reset Password API Error:', error);
         return of({ error: error.message || 'An error occurred during reset password.' });
       })
     );
@@ -86,7 +83,6 @@ export class AuthApiKpService {
         return { message: 'Logged out successfully.' };
       }),
       catchError((error) => {
-        console.error('Logout API Error:', error);
         return of({ error: error.message || 'An error occurred during logout.' });
       })
     );
