@@ -1,9 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Store } from '@ngrx/store';
+
 import { Subscription } from 'rxjs';
+
 import { AuthApiKpService } from 'auth-api-kp';
+
+import { Store } from '@ngrx/store';
 import { loginFailure, loginSuccess } from '../../../store/auth.actions';
 
 @Component({

@@ -5,10 +5,11 @@ import { RouterLink, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { AuthApiKpService } from 'auth-api-kp';
-
 import { NotificationService } from '../../../shared/services/notification/notification.service';
-import { registerFailure, registerSuccess } from '../../../store/auth.actions';
+
 import { Store } from '@ngrx/store';
+import { registerFailure, registerSuccess } from '../../../store/auth.actions';
+
 
 @Component({
   selector: 'app-register',
@@ -18,9 +19,8 @@ import { Store } from '@ngrx/store';
 })
 export class RegisterComponent {
   private readonly _authApiKpService = inject(AuthApiKpService);
-    private readonly _store = inject(Store);
+  private readonly _store = inject(Store);
   private readonly _router = inject(Router);
-  private readonly _notificationService = inject(NotificationService);
 
   apiError = signal<string>('');
   isLoading = signal<boolean>(false);
