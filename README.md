@@ -40,6 +40,7 @@
     │   ├── google.png
     │   └── twitter.png
     └── images
+    │   ├── 404-page-not-found.svg
     │   └── sideauth.png
 ├── src
     ├── app
@@ -99,6 +100,24 @@
     │   │   │   └── platform
     │   │   │       ├── platform.service.spec.ts
     │   │   │       └── platform.service.ts
+    │   ├── features
+    │   │   ├── layouts
+    │   │   │   └── dashboard
+    │   │   │   │   ├── dashboard.component.html
+    │   │   │   │   ├── dashboard.component.scss
+    │   │   │   │   ├── dashboard.component.spec.ts
+    │   │   │   │   └── dashboard.component.ts
+    │   │   └── pages
+    │   │   │   ├── home
+    │   │   │       ├── home.component.html
+    │   │   │       ├── home.component.scss
+    │   │   │       ├── home.component.spec.ts
+    │   │   │       └── home.component.ts
+    │   │   │   └── not-found
+    │   │   │       ├── not-found.component.html
+    │   │   │       ├── not-found.component.scss
+    │   │   │       ├── not-found.component.spec.ts
+    │   │   │       └── not-found.component.ts
     │   ├── shared
     │   │   ├── components
     │   │   │   └── ui
@@ -126,6 +145,7 @@
 ├── tsconfig.app.json
 ├── tsconfig.json
 └── tsconfig.spec.json
+
 
 
 ```
