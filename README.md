@@ -53,17 +53,22 @@
     │   ├── app.routes.ts
     │   ├── core
     │   │   ├── layouts
-    │   │   │   └── auth-layout
+    │   │   │   ├── auth-layout
     │   │   │   │   ├── auth-layout.component.html
     │   │   │   │   ├── auth-layout.component.scss
     │   │   │   │   ├── auth-layout.component.spec.ts
     │   │   │   │   ├── auth-layout.component.ts
     │   │   │   │   └── components
-    │   │   │   │       └── auth-navbar
-    │   │   │   │           ├── auth-navbar.component.html
-    │   │   │   │           ├── auth-navbar.component.scss
-    │   │   │   │           ├── auth-navbar.component.spec.ts
-    │   │   │   │           └── auth-navbar.component.ts
+    │   │   │   │   │   └── auth-navbar
+    │   │   │   │   │       ├── auth-navbar.component.html
+    │   │   │   │   │       ├── auth-navbar.component.scss
+    │   │   │   │   │       ├── auth-navbar.component.spec.ts
+    │   │   │   │   │       └── auth-navbar.component.ts
+    │   │   │   └── reset-password-layout
+    │   │   │   │   ├── reset-password-layout.component.html
+    │   │   │   │   ├── reset-password-layout.component.scss
+    │   │   │   │   ├── reset-password-layout.component.spec.ts
+    │   │   │   │   └── reset-password-layout.component.ts
     │   │   ├── pages
     │   │   │   ├── forget-password
     │   │   │   │   ├── forget-password.component.html
@@ -91,17 +96,27 @@
     │   │   │   │   ├── verify-code.component.spec.ts
     │   │   │   │   └── verify-code.component.ts
     │   │   └── services
-    │   │   │   ├── auth
-    │   │   │       ├── auth.service.spec.ts
-    │   │   │       └── auth.service.ts
     │   │   │   └── platform
     │   │   │       ├── platform.service.spec.ts
     │   │   │       └── platform.service.ts
-    │   └── shared
+    │   ├── shared
+    │   │   ├── components
+    │   │   │   └── ui
+    │   │   │   │   └── submit-button
+    │   │   │   │       ├── submit-button.component.html
+    │   │   │   │       ├── submit-button.component.scss
+    │   │   │   │       ├── submit-button.component.spec.ts
+    │   │   │   │       └── submit-button.component.ts
     │   │   └── services
-    │   │       └── notification
-    │   │           ├── notification.service.spec.ts
-    │   │           └── notification.service.ts
+    │   │   │   └── notification
+    │   │   │       ├── notification.service.spec.ts
+    │   │   │       └── notification.service.ts
+    │   └── store
+    │   │   ├── auth.actions.ts
+    │   │   ├── auth.effects.ts
+    │   │   ├── auth.reducer.ts
+    │   │   ├── auth.selectors.ts
+    │   │   └── auth.state.ts
     ├── index.html
     ├── main.server.ts
     ├── main.ts
@@ -111,7 +126,6 @@
 ├── tsconfig.app.json
 ├── tsconfig.json
 └── tsconfig.spec.json
-
 
 
 ```
