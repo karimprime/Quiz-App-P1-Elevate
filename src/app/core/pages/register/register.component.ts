@@ -5,10 +5,11 @@ import { Subscription } from 'rxjs';
 import { AuthApiKpService } from 'auth-api-kp';
 import { Store } from '@ngrx/store';
 import { registerFailure, registerSuccess } from '../../../store/auth.actions';
+import { SubmitButtonComponent } from "../../../shared/components/ui/submit-button/submit-button.component";
 
 @Component({
   selector: 'app-register',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule, SubmitButtonComponent],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })

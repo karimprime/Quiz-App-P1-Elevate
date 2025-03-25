@@ -8,10 +8,11 @@ import { AuthApiKpService } from 'auth-api-kp';
 
 import { Store } from '@ngrx/store';
 import { loginFailure, loginSuccess } from '../../../store/auth.actions';
+import { SubmitButtonComponent } from "../../../shared/components/ui/submit-button/submit-button.component";
 
 @Component({
   selector: 'app-login',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule, SubmitButtonComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })

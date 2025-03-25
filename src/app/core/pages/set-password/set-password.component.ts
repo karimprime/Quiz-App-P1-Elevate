@@ -4,10 +4,11 @@ import { Subscription } from 'rxjs';
 import { AuthApiKpService } from 'auth-api-kp';
 import { NotificationService } from '../../../shared/services/notification/notification.service';
 import { Router } from '@angular/router';
+import { SubmitButtonComponent } from "../../../shared/components/ui/submit-button/submit-button.component";
 
 @Component({
   selector: 'app-set-password',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SubmitButtonComponent],
   templateUrl: './set-password.component.html',
   styleUrl: './set-password.component.scss',
 })

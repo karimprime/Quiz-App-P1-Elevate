@@ -3,10 +3,11 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Subscription } from 'rxjs';
 import { AuthApiKpService } from 'auth-api-kp';
 import { NotificationService } from '../../../shared/services/notification/notification.service';
+import { SubmitButtonComponent } from "../../../shared/components/ui/submit-button/submit-button.component";
 
 @Component({
   selector: 'app-forget-password',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SubmitButtonComponent],
   templateUrl: './forget-password.component.html',
   styleUrls: ['./forget-password.component.scss'],
 })
