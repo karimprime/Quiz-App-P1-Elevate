@@ -1,15 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
-
 import { Subscription } from 'rxjs';
-
 import { AuthApiKpService } from 'auth-api-kp';
-import { NotificationService } from '../../../shared/services/notification/notification.service';
-
 import { Store } from '@ngrx/store';
 import { registerFailure, registerSuccess } from '../../../store/auth.actions';
-
 
 @Component({
   selector: 'app-register',
@@ -22,10 +17,15 @@ export class RegisterComponent {
   private readonly _store = inject(Store);
   private readonly _router = inject(Router);
 
+
   apiError = signal<string>('');
   isLoading = signal<boolean>(false);
+
+  activePopover = signal<string | null>(null);
+
   showPassword = signal<boolean>(false);
   showConfirmPassword = signal<boolean>(false);
+
   isPopoverVisible = signal<boolean>(false);
   strengthLevel = signal<number>(0);
   isMinLengthMet = signal<boolean>(false);
@@ -95,15 +95,25 @@ export class RegisterComponent {
     this.showConfirmPassword.update((value) => !value);
   }
 
-  showPopover(): void {
+  showPopover(fieldName: string): void {
+    this.activePopover.set(fieldName);
     this.isPopoverVisible.set(true);
   }
 
   hidePopover(): void {
     this.isPopoverVisible.set(false);
+    this.activePopover.set(null);
   }
 
-  RegisterSubmit(): void {
+  isPopoverVisibleFor(fieldName: string): boolean {
+    return this.isPopoverVisible() && this.activePopover() === fieldName;
+  }
+
+  get usernameControl() {
+    return this.registerForm.get('username');
+  }
+
+  registerSubmit(): void {
     if (this.registerForm.invalid) return;
     this.isLoading.set(true);
     this.apiError.set('');
@@ -128,3 +138,4 @@ export class RegisterComponent {
           });
         }
 }
+

@@ -3,15 +3,39 @@
   <!-- Title -->
   <h2 class="text-2xl font-bold text-gray-900 mb-8">Sign in</h2>
 
-  <!-- Email -->
-  <div class="w-full mb-8">
-    <div class="relative w-full">
-      <input id="toggle-Email-floating" type="email" class="input input-floating peer rounded-lg bg-colorInput"
-        [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
-        placeholder="Enter Your Email" formControlName="email" />
-      <label class="input-floating-label" for="toggle-Email-floating">Email</label>
-    </div>
+<!-- Email -->
+<div class="input-group w-full mb-8 rounded-lg bg-colorInput relative">
+  <div class="relative w-full rounded-lg bg-colorInput">
+    <input id="toggle-email-floating" type="email" class="input input-floating peer rounded-lg bg-colorInput"
+      [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+      placeholder="Enter Your Email" formControlName="email"
+      (focus)="showEmailPopover()"
+      (blur)="hideEmailPopover()"
+      aria-describedby="email-help"
+      aria-invalid="forgetPasswordForm.get('email')?.invalid" />
+    <label class="input-floating-label" for="toggle-email-floating">Email</label>
   </div>
+
+  <!-- Email Validation Popover -->
+  <div [class.hidden]="!isEmailPopoverVisible()"
+    class="absolute z-10 w-full p-4 bg-white shadow-lg rounded-lg mt-1 top-full left-0" role="tooltip"
+    id="email-help">
+    <h6 class="text-base text-base-content my-2 font-semibold">Email must:</h6>
+    <ul class="text-base-content/80 space-y-1 text-sm">
+      <li [class.text-success]="loginForm.get('email')?.valid" class="flex items-center gap-x-2">
+        <span [class.hidden]="!loginForm.get('email')?.valid" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+        <span [class.hidden]="loginForm.get('email')?.valid" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+        Be a valid email address
+      </li>
+      <li [class.text-success]="!loginForm.get('email')?.hasError('required')" class="flex items-center gap-x-2">
+        <span [class.hidden]="loginForm.get('email')?.hasError('required')" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+        <span [class.hidden]="!loginForm.get('email')?.hasError('required')" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+        Not be empty
+      </li>
+    </ul>
+  </div>
+</div>
+
 
   <!-- Password -->
   <div class="input-group w-full mb-8 rounded-lg bg-colorInput relative">
@@ -74,7 +98,7 @@
 
   <!-- Forgot Password Link -->
   <div class="w-full text-right mb-10">
-    <a routerLink="/auth-layout/forget-password"
+    <a routerLink="/auth-layout/reset-password-layout"
       class="text-base font-normal text-colorNavLink hover:underline cursor-pointer">
       Recover Password ?
     </a>

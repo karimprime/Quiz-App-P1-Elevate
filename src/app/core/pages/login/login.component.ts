@@ -25,12 +25,22 @@ export class LoginComponent {
   showPassword = signal<boolean>(false);
   isPopoverVisible = signal<boolean>(false);
 
+  isEmailPopoverVisible = signal<boolean>(false);
+
   strengthLevel = signal<number>(0);
   isMinLengthMet = signal<boolean>(false);
   hasLowercase = signal<boolean>(false);
   hasUppercase = signal<boolean>(false);
   hasNumber = signal<boolean>(false);
   hasSpecialChar = signal<boolean>(false);
+
+  showEmailPopover(): void {
+    this.isEmailPopoverVisible.set(true);
+  }
+
+  hideEmailPopover(): void {
+    this.isEmailPopoverVisible.set(false);
+  }
 
   loginForm: FormGroup = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),

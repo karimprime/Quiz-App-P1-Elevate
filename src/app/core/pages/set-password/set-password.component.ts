@@ -1,12 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-
 import { Subscription } from 'rxjs';
-
 import { AuthApiKpService } from 'auth-api-kp';
 import { NotificationService } from '../../../shared/services/notification/notification.service';
-
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-set-password',
@@ -16,8 +13,12 @@ import { NotificationService } from '../../../shared/services/notification/notif
 })
 export class SetPasswordComponent {
   private readonly _authApiKpService = inject(AuthApiKpService);
-  private readonly _router = inject(Router);
   private readonly _notificationService = inject(NotificationService);
+  private readonly _router = inject(Router);
+
+  @Input() email: string = '';
+  @Output() passwordReset = new EventEmitter<void>();
+  @Output() goBack = new EventEmitter<void>();
 
   apiError = signal<string>('');
   isLoading = signal<boolean>(false);
@@ -103,23 +104,14 @@ export class SetPasswordComponent {
     this.isLoading.set(true);
     this.apiError.set('');
 
-    const email = sessionStorage.getItem('resetEmail');
     const newPassword = this.resetPasswordForm.get('newPassword')?.value;
-
-    if (!email) {
-      this.apiError.set('Email not found. Please try again.');
-      this.isLoading.set(false);
-      this._notificationService.error('Email not found. Please try again.');
-      return;
-    }
-
-    const resetData = { email, newPassword };
+    const resetData = { email: this.email, newPassword };
 
     this.resetPasswordSub = this._authApiKpService.resetPassword(resetData).subscribe({
       next: (response) => {
         this.isLoading.set(false);
         this._notificationService.success('Password reset successfully!');
-        sessionStorage.removeItem('resetEmail');
+        this.passwordReset.emit();
         this._router.navigate(['/auth-layout/login']);
       },
       error: (err) => {

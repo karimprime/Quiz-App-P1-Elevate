@@ -1,53 +1,185 @@
-<form [formGroup]="registerForm" (ngSubmit)="RegisterSubmit()" aria-labelledby="register-form-title">
+<form [formGroup]="registerForm" (ngSubmit)="registerSubmit()" aria-labelledby="register-form-title">
   <h2 id="register-form-title" class="text-2xl font-bold text-gray-900 mb-8">Sign Up</h2>
 
-  <!-- UserName -->
-  <div class="w-full mb-8">
-    <div class="relative w-full">
-      <input id="username" type="text" class="input input-floating peer rounded-lg bg-colorInput"
-        [class.is-invalid]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
-        placeholder="Enter Your UserName" formControlName="username" aria-describedby="username-error" />
-      <label class="input-floating-label" for="username">UserName</label>
-    </div>
+<!-- UserName -->
+<div class="input-group w-full mb-8 rounded-lg bg-colorInput relative">
+  <div class="relative w-full rounded-lg bg-colorInput">
+    <input id="username" type="text" class="input input-floating peer rounded-lg bg-colorInput"
+      [class.is-invalid]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
+      placeholder="Enter Your UserName" formControlName="username"
+      (focus)="showPopover('username')"
+      (blur)="hidePopover()"
+      aria-describedby="username-help"
+      aria-invalid="registerForm.get('username')?.invalid" />
+    <label class="input-floating-label" for="username">UserName</label>
   </div>
 
+  <!-- Username Validation Popover -->
+  <div [class.hidden]="!isPopoverVisibleFor('username')"
+    class="absolute z-10 w-full p-4 bg-white shadow-lg rounded-lg mt-1 top-full left-0" role="tooltip"
+    id="username-help">
+    <h6 class="text-base text-base-content my-2 font-semibold">Username must:</h6>
+    <ul class="text-base-content/80 space-y-1 text-sm">
+      <li [class.text-success]="!registerForm.get('username')?.hasError('required')" class="flex items-center gap-x-2">
+        <span [class.hidden]="registerForm.get('username')?.hasError('required')" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+        <span [class.hidden]="!registerForm.get('username')?.hasError('required')" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+        Not be empty
+      </li>
+
+      <li [class.text-success]="!registerForm.get('username')?.hasError('required') && !registerForm.get('username')?.hasError('minlength')" class="flex items-center gap-x-2">
+        <span [class.hidden]="registerForm.get('username')?.hasError('required') || registerForm.get('username')?.hasError('minlength')" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+        <span [class.hidden]="!(registerForm.get('username')?.hasError('required') || registerForm.get('username')?.hasError('minlength'))" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+        Be at least 3 characters
+      </li>
+
+      <li [class.text-success]="!registerForm.get('username')?.hasError('required') && !registerForm.get('username')?.hasError('maxlength')" class="flex items-center gap-x-2">
+        <span [class.hidden]="registerForm.get('username')?.hasError('required') || registerForm.get('username')?.hasError('maxlength')" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+        <span [class.hidden]="!(registerForm.get('username')?.hasError('required') || registerForm.get('username')?.hasError('maxlength'))" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+        Be no more than 30 characters
+      </li>
+    </ul>
+  </div>
+</div>
+
   <!-- firstName -->
-  <div class="w-full mb-8">
-    <div class="relative w-full">
+  <div class="input-group w-full mb-8 rounded-lg bg-colorInput relative">
+    <div class="relative w-full rounded-lg bg-colorInput">
       <input id="firstName" type="text" class="input input-floating peer rounded-lg bg-colorInput"
         [class.is-invalid]="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched"
-        placeholder="Enter Your First Name" formControlName="firstName" aria-describedby="firstName-error" />
+        placeholder="Enter Your First Name" formControlName="firstName"
+        (focus)="showPopover('firstName')"
+        (blur)="hidePopover()"
+        aria-describedby="firstName-help"
+        aria-invalid="registerForm.get('firstName')?.invalid" />
       <label class="input-floating-label" for="firstName">First Name</label>
+    </div>
+
+    <!-- First Name Validation Popover -->
+    <div [class.hidden]="!isPopoverVisibleFor('firstName')"
+      class="absolute z-10 w-full p-4 bg-white shadow-lg rounded-lg mt-1 top-full left-0" role="tooltip"
+      id="firstName-help">
+      <h6 class="text-base text-base-content my-2 font-semibold">First name must:</h6>
+      <ul class="text-base-content/80 space-y-1 text-sm">
+        <li [class.text-success]="!registerForm.get('firstName')?.hasError('required')" class="flex items-center gap-x-2">
+          <span [class.hidden]="registerForm.get('firstName')?.hasError('required')" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+          <span [class.hidden]="!registerForm.get('firstName')?.hasError('required')" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+          Not be empty
+        </li>
+        <li [class.text-success]="!registerForm.get('firstName')?.hasError('required') && !registerForm.get('firstName')?.hasError('minlength')" class="flex items-center gap-x-2">
+          <span [class.hidden]="registerForm.get('firstName')?.hasError('required') || registerForm.get('firstName')?.hasError('minlength')" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+          <span [class.hidden]="!(registerForm.get('firstName')?.hasError('required') || registerForm.get('firstName')?.hasError('minlength'))" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+          Be at least 3 characters
+        </li>
+        <li [class.text-success]="!registerForm.get('firstName')?.hasError('required') && !registerForm.get('firstName')?.hasError('maxlength')" class="flex items-center gap-x-2">
+          <span [class.hidden]="registerForm.get('firstName')?.hasError('required') || registerForm.get('firstName')?.hasError('maxlength')" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+          <span [class.hidden]="!(registerForm.get('firstName')?.hasError('required') || registerForm.get('firstName')?.hasError('maxlength'))" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+          Be no more than 30 characters
+        </li>
+      </ul>
     </div>
   </div>
 
   <!-- lastName -->
-  <div class="w-full mb-8">
-    <div class="relative w-full">
+  <div class="input-group w-full mb-8 rounded-lg bg-colorInput relative">
+    <div class="relative w-full rounded-lg bg-colorInput">
       <input id="lastName" type="text" class="input input-floating peer rounded-lg bg-colorInput"
         [class.is-invalid]="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched"
-        placeholder="Enter Your Last Name" formControlName="lastName" aria-describedby="lastName-error" />
+        placeholder="Enter Your Last Name" formControlName="lastName"
+        (focus)="showPopover('lastName')"
+        (blur)="hidePopover()"
+        aria-describedby="lastName-help"
+        aria-invalid="registerForm.get('lastName')?.invalid" />
       <label class="input-floating-label" for="lastName">Last Name</label>
+    </div>
+
+    <!-- Last Name Validation Popover -->
+    <div [class.hidden]="!isPopoverVisibleFor('lastName')"
+      class="absolute z-10 w-full p-4 bg-white shadow-lg rounded-lg mt-1 top-full left-0" role="tooltip"
+      id="lastName-help">
+      <h6 class="text-base text-base-content my-2 font-semibold">Last name must:</h6>
+      <ul class="text-base-content/80 space-y-1 text-sm">
+        <li [class.text-success]="!registerForm.get('lastName')?.hasError('required')" class="flex items-center gap-x-2">
+          <span [class.hidden]="registerForm.get('lastName')?.hasError('required')" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+          <span [class.hidden]="!registerForm.get('lastName')?.hasError('required')" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+          Not be empty
+        </li>
+        <li [class.text-success]="!registerForm.get('lastName')?.hasError('required') && !registerForm.get('lastName')?.hasError('minlength')" class="flex items-center gap-x-2">
+          <span [class.hidden]="registerForm.get('lastName')?.hasError('required') || registerForm.get('lastName')?.hasError('minlength')" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+          <span [class.hidden]="!(registerForm.get('lastName')?.hasError('required') || registerForm.get('lastName')?.hasError('minlength'))" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+          Be at least 3 characters
+        </li>
+        <li [class.text-success]="!registerForm.get('lastName')?.hasError('required') && !registerForm.get('lastName')?.hasError('maxlength')" class="flex items-center gap-x-2">
+          <span [class.hidden]="registerForm.get('lastName')?.hasError('required') || registerForm.get('lastName')?.hasError('maxlength')" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+          <span [class.hidden]="!(registerForm.get('lastName')?.hasError('required') || registerForm.get('lastName')?.hasError('maxlength'))" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+          Be no more than 30 characters
+        </li>
+      </ul>
     </div>
   </div>
 
   <!-- Email -->
-  <div class="w-full mb-8">
-    <div class="relative w-full">
+  <div class="input-group w-full mb-8 rounded-lg bg-colorInput relative">
+    <div class="relative w-full rounded-lg bg-colorInput">
       <input id="email" type="email" class="input input-floating peer rounded-lg bg-colorInput"
         [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
-        placeholder="Enter Your Email" formControlName="email" aria-describedby="email-error" />
+        placeholder="Enter Your Email" formControlName="email"
+        (focus)="showPopover('email')"
+        (blur)="hidePopover()"
+        aria-describedby="email-help"
+        aria-invalid="registerForm.get('email')?.invalid" />
       <label class="input-floating-label" for="email">Email</label>
+    </div>
+
+    <!-- Email Validation Popover -->
+    <div [class.hidden]="!isPopoverVisibleFor('email')"
+      class="absolute z-10 w-full p-4 bg-white shadow-lg rounded-lg mt-1 top-full left-0" role="tooltip"
+      id="email-help">
+      <h6 class="text-base text-base-content my-2 font-semibold">Email must:</h6>
+      <ul class="text-base-content/80 space-y-1 text-sm">
+        <li [class.text-success]="!registerForm.get('email')?.hasError('required')" class="flex items-center gap-x-2">
+          <span [class.hidden]="registerForm.get('email')?.hasError('required')" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+          <span [class.hidden]="!registerForm.get('email')?.hasError('required')" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+          Not be empty
+        </li>
+        <li [class.text-success]="!registerForm.get('email')?.hasError('required') && !registerForm.get('email')?.hasError('email')" class="flex items-center gap-x-2">
+          <span [class.hidden]="registerForm.get('email')?.hasError('required') || registerForm.get('email')?.hasError('email')" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+          <span [class.hidden]="!(registerForm.get('email')?.hasError('required') || registerForm.get('email')?.hasError('email'))" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+          Be a valid email format
+        </li>
+      </ul>
     </div>
   </div>
 
   <!-- Phone -->
-  <div class="w-full mb-8">
-    <div class="relative w-full">
+  <div class="input-group w-full mb-8 rounded-lg bg-colorInput relative">
+    <div class="relative w-full rounded-lg bg-colorInput">
       <input id="phone" type="tel" class="input input-floating peer rounded-lg bg-colorInput"
         [class.is-invalid]="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched"
-        placeholder="Enter Your Phone" formControlName="phone" aria-describedby="phone-error" />
+        placeholder="Enter Your Phone" formControlName="phone"
+        (focus)="showPopover('phone')"
+        (blur)="hidePopover()"
+        aria-describedby="phone-help"
+        aria-invalid="registerForm.get('phone')?.invalid" />
       <label class="input-floating-label" for="phone">Phone</label>
+    </div>
+
+    <!-- Phone Validation Popover -->
+    <div [class.hidden]="!isPopoverVisibleFor('phone')"
+      class="absolute z-10 w-full p-4 bg-white shadow-lg rounded-lg mt-1 top-full left-0" role="tooltip"
+      id="phone-help">
+      <h6 class="text-base text-base-content my-2 font-semibold">Phone must:</h6>
+      <ul class="text-base-content/80 space-y-1 text-sm">
+        <li [class.text-success]="!registerForm.get('phone')?.hasError('required')" class="flex items-center gap-x-2">
+          <span [class.hidden]="registerForm.get('phone')?.hasError('required')" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+          <span [class.hidden]="!registerForm.get('phone')?.hasError('required')" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+          Not be empty
+        </li>
+        <li [class.text-success]="!registerForm.get('phone')?.hasError('required') && !registerForm.get('phone')?.hasError('pattern')" class="flex items-center gap-x-2">
+          <span [class.hidden]="registerForm.get('phone')?.hasError('required') || registerForm.get('phone')?.hasError('pattern')" class="icon-[tabler--circle-check] size-5 flex-shrink-0"></span>
+          <span [class.hidden]="!(registerForm.get('phone')?.hasError('required') || registerForm.get('phone')?.hasError('pattern'))" class="icon-[tabler--circle-x] size-5 flex-shrink-0"></span>
+          Be a valid Egyptian phone number (01XXXXXXXXX)
+        </li>
+      </ul>
     </div>
   </div>
 
@@ -58,7 +190,9 @@
       <input id="toggle-password-floating" [type]="showPassword() ? 'text' : 'password'"
         class="input input-floating peer rounded-lg bg-colorInput"
         [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
-        placeholder="Enter Password" formControlName="password" (focus)="showPopover()" (blur)="hidePopover()" />
+        placeholder="Enter Password" formControlName="password"
+        (focus)="showPopover('password')"
+        (blur)="hidePopover()" />
       <label class="input-floating-label" for="toggle-password-floating">Password</label>
     </div>
     <span class="input-group-text !rounded-lg !bg-colorInput">
@@ -71,7 +205,7 @@
     </span>
 
     <!-- Password Strength Popover -->
-    <div [class.hidden]="!isPopoverVisible()"
+    <div [class.hidden]="!isPopoverVisibleFor('password')"
       class="absolute z-10 w-full p-4 bg-white shadow-lg rounded-lg mt-1 top-full left-0">
       <div class="strength-meter flex -mx-1 mt-2.5">
         @for (i of [1, 2, 3, 4, 5]; track i) {
@@ -110,7 +244,6 @@
     </div>
   </div>
 
-
   <!-- Confirm Password -->
   <div class="input-group w-full mb-8 rounded-lg bg-colorInput relative">
     <!-- Confirm Password Input with Toggle -->
@@ -133,6 +266,11 @@
     </span>
   </div>
 
+  <!-- Error Message -->
+  @if (apiError()) {
+    <div class="text-red-500 text-sm mb-4">{{ apiError() }}</div>
+  }
+
   <!-- Back to Login -->
   <div class="w-full text-center mb-6">
     <span class="font-medium">Already have an account?<a routerLink="/auth-layout/login"
@@ -149,3 +287,4 @@
     }
   </button>
 </form>
+
