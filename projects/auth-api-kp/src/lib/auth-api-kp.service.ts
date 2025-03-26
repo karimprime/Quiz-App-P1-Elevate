@@ -77,7 +77,7 @@ export class AuthApiKpService {
   }
 
   logout(): Observable<any> {
-    return this._httpClient.post(AuthEndPoint.LOGOUT, {}).pipe(
+    return this._httpClient.get(AuthEndPoint.LOGOUT, {}).pipe(
       map(() => {
         this.userData.next(null);
         return { message: 'Logged out successfully.' };

@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { AuthLayoutComponent } from './core/layouts/auth-layout/auth-layout.component';
 import { DashboardComponent } from './features/layouts/dashboard/dashboard.component';
+import { loggedGuard } from './core/guards/logged-user/logged.guard';
+import { authGuard } from './core/guards/auth/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'auth-layout', pathMatch: 'full' },

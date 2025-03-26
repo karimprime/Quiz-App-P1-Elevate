@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { Subscription } from 'rxjs';
 
@@ -18,6 +18,7 @@ import { SubmitButtonComponent } from "../../../shared/components/ui/submit-butt
 })
 export class LoginComponent {
   private readonly _authApiKpService = inject(AuthApiKpService);
+  private readonly _router = inject(Router);
   private readonly _store = inject(Store);
 
   apiError = signal<string>('');
@@ -111,6 +112,7 @@ export class LoginComponent {
       next: (res) => {
         if ('token' in res && res.message === 'success') {
           this._store.dispatch(loginSuccess({ token: res.token }));
+          this._router.navigate(['/dashboard/home']);
         } else {
           this.apiError.set('Email or Password is incorrect!');
           this._store.dispatch(loginFailure({ error: this.apiError() }));
