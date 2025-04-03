@@ -3,6 +3,7 @@ export interface AuthState {
   userData: any | null;
   error: string | null;
   isLoading: boolean;
+  isAuthenticated: boolean;
 }
 
 export const initialAuthState: AuthState = {
@@ -10,4 +11,5 @@ export const initialAuthState: AuthState = {
   userData: null,
   error: null,
   isLoading: false,
+  isAuthenticated: false
 };

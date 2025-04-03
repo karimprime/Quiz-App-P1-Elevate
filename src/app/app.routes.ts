@@ -9,16 +9,16 @@ export const routes: Routes = [
   {path: 'auth-layout', component: AuthLayoutComponent, title: 'Dashboard Auth',
     children: [
       { path: '', redirectTo: 'login', pathMatch: 'full' },
-      { path: 'login', title: 'Login', loadComponent: () => import('./core/pages/login/login.component').then(c => c.LoginComponent) },
-      { path: 'register', title: 'Register', loadComponent: () => import('./core/pages/register/register.component').then(c => c.RegisterComponent) },
-      { path: 'reset-password-layout', title: 'Forget Password', loadComponent: () => import('./core/layouts/reset-password-layout/reset-password-layout.component').then(c => c.ResetPasswordLayoutComponent) },
+      { path: 'login', title: 'Login', canActivate:[loggedGuard] , loadComponent: () => import('./core/pages/login/login.component').then(c => c.LoginComponent) },
+      { path: 'register', title: 'Register', canActivate:[loggedGuard] , loadComponent: () => import('./core/pages/register/register.component').then(c => c.RegisterComponent) },
+      { path: 'reset-password-layout', title: 'Forget Password' , canActivate:[loggedGuard] , loadComponent: () => import('./core/layouts/reset-password-layout/reset-password-layout.component').then(c => c.ResetPasswordLayoutComponent) },
     ]
   },
 
   {path: 'dashboard', component: DashboardComponent, title: 'Dashboard Home',
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', title: 'Home', loadComponent: () => import('./features/pages/home/home.component').then(c => c.HomeComponent) },
+      { path: 'home', title: 'Home', canActivate: [authGuard] ,loadComponent: () => import('./features/pages/home/home.component').then(c => c.HomeComponent) },
     ]
   },
 

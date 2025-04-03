@@ -80,6 +80,7 @@ export class AuthApiKpService {
     return this._httpClient.get(AuthEndPoint.LOGOUT, {}).pipe(
       map(() => {
         this.userData.next(null);
+        localStorage.removeItem('userToken');
         return { message: 'Logged out successfully.' };
       }),
       catchError((error) => {
@@ -88,3 +89,7 @@ export class AuthApiKpService {
     );
   }
 }
+
+
+
+

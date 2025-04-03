@@ -20,11 +20,12 @@ logout() {
   this.authService.logout().subscribe({
     next: (response) => {
       console.log(response.message);
+      localStorage.removeItem('userToken');
       this.router.navigate(['/auth-layout/login']);
     },
     error: (err) => {
       console.error('Logout error:', err);
-      this.router.navigate(['/auth-layout/login']); // Still navigate even on error
+      this.router.navigate(['/auth-layout/login']);
     }
   });
 }
