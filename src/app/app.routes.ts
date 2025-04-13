@@ -19,6 +19,7 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', title: 'Home', canActivate: [authGuard] ,loadComponent: () => import('./features/pages/home/home.component').then(c => c.HomeComponent) },
+      { path: 'quiz-history', title: 'Quiz History', canActivate: [authGuard] ,loadComponent: () => import('./features/pages/quiz-history/quiz-history.component').then(c => c.QuizHistoryComponent) },
     ]
   },
 

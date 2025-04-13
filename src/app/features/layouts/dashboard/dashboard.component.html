@@ -1,2 +1,94 @@
-<app-home />
-<p>dashboard works!</p>
+<div class="flex min-h-screen bg-colorBackground">
+
+  <aside id="default-sidebar" class="bg-colorBackground overlay [--auto-close:sm] sm:shadow-none overlay-open:translate-x-0 drawer drawer-start hidden max-w-72 sm:absolute sm:z-0 sm:flex sm:translate-x-0" role="dialog" tabindex="-1" >
+    <div class="drawer-body px-2 py-4 h-full flex flex-col">
+      <a class="px-8 py-10">
+        <img src="/images/elevateLogo.png" alt="Elevate Logo" class="w-[151px] h-[29px]">
+      </a>
+      <ul class="menu space-y-8">
+        <li>
+          <a routerLink="/dashboard/home"
+          routerLinkActive="bg-colorNavLink"
+          class="flex items-center px-8 py-4 rounded-lg transition-colors duration-200 hover:bg-blue-100 hover:text-colorNavLink"
+          aria-current="page">
+         <i class="fa-solid fa-window-restore text-colorNavLink text-2xl mr-6"
+         [class]="isLinkActive('/dashboard/home') ? 'text-white' : 'text-colorNavLink'"></i>
+         <span class="text-xl font-semibold"
+         [class]="isLinkActive('/dashboard/home') ? 'text-white' : 'text-colorNavLink'">Dashboard</span>
+       </a>
+        </li>
+        <li>
+          <a routerLink="/dashboard/quiz-history"
+          routerLinkActive="bg-colorNavLink"
+          class="flex items-center px-8 py-4 rounded-lg transition-colors duration-200 hover:bg-blue-100 hover:text-colorNavLink">
+         <i class="fa-solid fa-clock-rotate-left text-2xl mr-6"
+         [class]="isLinkActive('/dashboard/quiz-history') ? 'text-white' : 'text-colorNavLink'"></i>
+         <span class="text-xl font-semibold"
+         [class.text-white]="isLinkActive('/dashboard/quiz-history')">Quiz History</span>
+       </a>
+        </li>
+        <li class="mt-6">
+          <button (click)="logout()"
+          class="group w-full flex items-center px-8 py-4 rounded-lg transition-colors duration-200 hover:bg-red-100 hover:text-red-600"
+          [disabled]="isLoading"
+          aria-label="Log out">
+          @if (isLoading) {
+            <i class="fa-solid fa-spinner animate-spin text-2xl mr-6"></i>
+            <span class="text-xl font-semibold">Logging out </span>
+          }
+          @else{
+            <i class="fa-solid fa-right-from-bracket fa-flip-horizontal text-colorNavLink text-2xl mr-6 group-hover:text-red-600"></i>
+            <span class="text-xl font-semibold">Log Out </span>
+          }
+  </button>
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col overflow-hidden sm:ml-72">
+    <!-- Header with Search and Avatar -->
+    <header class="bg-colorBackground z-30 py-12 px-6">
+      <div class="flex items-center justify-between gap-4">
+
+          <!-- Mobile Sidebar Toggle Button -->
+  <button type="button" class="btn btn-text max-sm:btn-square sm:hidden" aria-haspopup="dialog" aria-expanded="false" aria-controls="default-sidebar" data-overlay="#default-sidebar" >
+    <span class="icon-[tabler--menu-2] size-5"></span>
+  </button>
+
+          <!-- Search Bar - Takes remaining space -->
+        <div class="flex-1 max-w-full">
+          <div class="relative">
+            <div class="relative">
+              <input class="h-[61px] input px-10 py-3 rounded-xl border border-white shadow-md focus:ring-2 focus:ring-colorNavLink focus:border-colorNavLink hover:border-colorNavLink"
+                     type="text"
+                     placeholder="Search Quiz"
+                     role="combobox"
+                     aria-expanded="false"
+                     aria-label="Search"
+                     aria-controls="search-results"
+                     data-combo-box-input />
+              <span class="icon-[tabler--search] text-colorInputIcons absolute start-3 top-1/2 size-5 shrink-0 -translate-y-1/2"></span>
+            </div>
+          </div>
+        </div>
+
+        <button class="bg-colorNavLink text-white px-11 py-4 text-xl rounded-2xl font-semibold">Start Quiz</button>
+
+        <!-- Avatar - Fixed on the right -->
+        <div class="avatar">
+          <div class="size-10 sm:size-15 rounded-full border-2 border-white shadow">
+            <img src="https://cdn.flyonui.com/fy-assets/avatar/avatar-1.png" alt="User avatar" />
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-gray-50">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
