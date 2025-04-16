@@ -5,7 +5,7 @@ import { AuthApiKpService } from 'auth-api-kp';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [ RouterOutlet , RouterLink , RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -18,9 +18,9 @@ export class DashboardComponent {
 
 
 
-isLinkActive(url: string): boolean {
-  return this.router.isActive(url, true);
-}
+  isLinkActive(url: string): boolean {
+    return this.router.isActive(url, true);
+  }
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;

@@ -20,6 +20,7 @@ module.exports = {
         colorBorderContinue: "#E7E7E7",
         colorItemsSideBar: "#696F79",
         colorBackground: "#FBF9F9",
+        colorBackgroundTitleCard: "#1100FF66",
       },
     },
   },
