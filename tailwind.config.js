@@ -21,6 +21,8 @@ module.exports = {
         colorItemsSideBar: "#696F79",
         colorBackground: "#FBF9F9",
         colorBackgroundTitleCard: "#1100FF66",
+        colorTitleUser: "#979CA3",
+        colorItemsSideBar: "#696F79",
       },
     },
   },

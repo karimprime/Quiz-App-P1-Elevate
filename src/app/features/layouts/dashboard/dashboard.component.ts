@@ -1,11 +1,12 @@
+
 import { Component, inject } from '@angular/core';
+import { FormControl, FormsModule } from '@angular/forms';
 import { Router, RouterLinkActive, RouterLink, RouterOutlet } from '@angular/router';
 import { AuthApiKpService } from 'auth-api-kp';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive , FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -15,8 +16,10 @@ export class DashboardComponent {
 
   isLoading = false;
   isSidebarOpen = false;
+  searchExpanded = false;
+  searchQuery = '';
 
-
+    searchControl = new FormControl('');
 
   isLinkActive(url: string): boolean {
     return this.router.isActive(url, true);
@@ -24,6 +27,28 @@ export class DashboardComponent {
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  toggleSearch() {
+    this.searchExpanded = !this.searchExpanded;
+    if (this.searchExpanded) {
+      setTimeout(() => {
+        const searchInput = document.querySelector('input[type="text"]');
+        if (searchInput) {
+          (searchInput as HTMLElement).focus();
+        }
+      }, 100);
+    }
+  }
+
+  expandSearch() {
+    this.searchExpanded = true;
+  }
+
+  collapseSearch() {
+    if (!this.searchQuery) {
+      this.searchExpanded = false;
+    }
   }
 
   logout() {

@@ -20,6 +20,7 @@ export const routes: Routes = [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', title: 'Home', canActivate: [authGuard] ,loadComponent: () => import('./features/pages/home/home.component').then(c => c.HomeComponent) },
       { path: 'quiz-history', title: 'Quiz History', canActivate: [authGuard] ,loadComponent: () => import('./features/pages/quiz-history/quiz-history.component').then(c => c.QuizHistoryComponent) },
+      { path: 'quizzes', title: 'Quizzes', canActivate: [authGuard] ,loadComponent: () => import('./features/pages/quizzes/quizzes.component').then(c => c.QuizzesComponent) },
     ]
   },
 

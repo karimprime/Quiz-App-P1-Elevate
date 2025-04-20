@@ -1,31 +1,16 @@
-import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthApiKpService } from 'auth-api-kp';
+import { Component } from '@angular/core';
+import { SecUserDataComponent } from "../../layouts/addecations/sec-user-data/sec-user-data.component";
+import { SecQuizzesComponent } from "../../layouts/addecations/sec-quizzes/sec-quizzes.component";
 
-interface Card {
-  id: string;
-  image: string;
-  altText: string;
-  title: string;
-  subtitle: string;
-}
+
 @Component({
   selector: 'app-home',
-  standalone: true,
-  imports: [],
+  imports: [SecUserDataComponent, SecQuizzesComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
 
-  cards: Card[] = [
-    {
-      id: '1',
-      image: 'https://cdn.flyonui.com/fy-assets/components/card/image-5.png',
-      altText: 'Front-end development concepts',
-      title: 'Front-End Web Developer',
-      subtitle: 'Voluptatem aut ut dignissimos blanditiis'
-    },
-  ];
+
 
 }
