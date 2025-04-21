@@ -1,0 +1,125 @@
+<!-- quiz-questions.component.html -->
+@if (!quizStarted) {
+<!-- Instructions Screen -->
+<div class="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+  <div class="flex justify-between gap-20">
+    <h3 class="text-2xl font-medium text-black">Instructions</h3>
+
+    <button
+      type="button"
+      class="btn btn-text btn-circle btn-sm"
+      (click)="onClose()"
+    >
+      <span class="icon-[tabler--x] size-4"></span>
+    </button>
+  </div>
+
+  <div class="flex-1 overflow-y-auto p-2">
+    <ul class="list-inside list-disc mb-6">
+      <li class="mb-1 mx-3 text-md font-medium text-gray-700">
+        Lorem ipsum dolor sit amet consectetur
+      </li>
+      <li class="mb-1 mx-3 text-md font-medium text-gray-700">
+        Lorem ipsum dolor sit amet consectetur
+      </li>
+      <li class="mb-1 mx-3 text-md font-medium text-gray-700">
+        Lorem ipsum dolor sit amet consectetur
+      </li>
+      <li class="mb-1 mx-3 text-md font-medium text-gray-700">
+        Lorem ipsum dolor sit amet consectetur
+      </li>
+    </ul>
+  </div>
+
+  <div>
+    <button
+      type="button"
+      class="rounded-2xl bg-colorNavLink text-white px-8 py-2 w-full font-semibold hover:bg-blue-700 transition"
+      (click)="startQuiz()"
+    >
+      Start Quiz
+    </button>
+  </div>
+</div>
+} @else {
+<!-- Actual Quiz Screen -->
+<div class="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] flex flex-col">
+  <div class="flex flex-col">
+    <div class="flex justify-between items-center">
+      <span class="text-colorNavLink text-sm font-medium"
+        >Question 1 of 20</span
+      >
+      <div class="flex items-center gap-2">
+        <img src="icons/clock.png" alt="" />
+        <span class="text-green-600 text-lg font-normal">14:59</span>
+      </div>
+    </div>
+
+    <div class="flex justify-between my-8">
+      <div class="p-1 bg-colorPoints w-1 rounded-full"></div>
+      <div class="p-1 bg-colorPoints w-1 rounded-full"></div>
+      <div class="p-1 bg-colorPoints w-1 rounded-full"></div>
+      <div class="p-1 bg-colorPoints w-1 rounded-full"></div>
+      <div class="p-1 bg-colorPoints w-1 rounded-full"></div>
+      <div class="p-1 bg-colorPoints w-1 rounded-full"></div>
+      <div class="p-1 bg-colorPoints w-1 rounded-full"></div>
+      <div class="p-1 bg-colorPoints w-1 rounded-full"></div>
+      <div class="p-1 bg-colorPoints w-1 rounded-full"></div>
+      <div class="p-1 bg-colorPoints w-1 rounded-full"></div>
+      <div class="p-1 bg-colorPoints w-1 rounded-full"></div>
+      <div class="p-1 bg-colorPoints w-1 rounded-full"></div>
+      <div class="p-1 bg-colorPoints w-1 rounded-full"></div>
+    </div>
+
+    <div>
+      <h3 class="text-2xl text-black font-medium">
+        Exercitationem pariatur quae facere vel id est illo velit aut.
+      </h3>
+    </div>
+
+    <div class="my-6 flex flex-col gap-5">
+      <label
+        class="flex items-center gap-3 p-6 hover:bg-gray-200 rounded-2xl cursor-pointer bg-colorBgRadio"
+      >
+        <input
+          type="radio"
+          name="q1"
+          class="radio radio-blue radio-inset-blue bg-colorBgRadio"
+        />
+        <span class="text-lg text-black font-normal"
+          >Numquam ipsum et nostrum non iste porro laudantium</span
+        >
+      </label>
+
+      <label
+        class="flex items-center gap-3 p-6 hover:bg-gray-200 rounded-2xl cursor-pointer bg-colorBgRadioSelect"
+      >
+        <input
+          type="radio"
+          name="q1"
+          class="radio radio-blue radio-inset-blue bg-colorBgRadio"
+        />
+        <span class="text-lg text-black font-normal"
+          >Numquam ipsum et nostrum non iste porro laudantium</span
+        >
+      </label>
+    </div>
+  </div>
+
+  <div class="p-4 flex justify-between gap-10">
+    <button
+      type="button"
+      class="rounded-full border border-colorNavLink text-colorNavLink text-xl px-8 py-4 w-full font-semibold hover:bg-blue-700 transition"
+    >
+      Back
+    </button>
+
+    <button
+      type="button"
+      class="rounded-full bg-colorNavLink text-white px-8 py-2 w-full font-semibold hover:bg-blue-700 transition"
+    >
+      Next
+    </button>
+  </div>
+</div>
+}

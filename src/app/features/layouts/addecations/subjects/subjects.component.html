@@ -1,70 +1,40 @@
-
+<!-- subjects.component.html -->
 <h2 class="text-lg font-medium text-black mb-6">Front-End Quiz</h2>
-<section class="bg-colorBackground lg:bg-white w-full px-4 py-8 md:px-6 lg:px-8 rounded-xl lg:shadow-md mb-10">
-
-<div class="flex justify-between items-center">
-  <div class="flex gap-4 items-center">
-    <img src="/icons/html.png" alt="">
-
-    <div class="flex flex-col gap-1">
-      <h2 class="text-lg font-medium text-black">HTML</h2>
-      <span class="text-md font-normal text-gray-600">20 Questions</span>
+<section
+  class="bg-colorBackground lg:bg-white w-full px-4 py-8 md:px-6 lg:px-8 rounded-xl lg:shadow-md mb-10"
+>
+  <div class="flex justify-between items-center">
+    <div class="flex gap-4 items-center">
+      <img src="/icons/html.png" alt="HTML Icon" />
+      <div class="flex flex-col gap-1">
+        <h2 class="text-lg font-medium text-black">HTML</h2>
+        <span class="text-md font-normal text-gray-600">20 Questions</span>
+      </div>
+    </div>
+    <div class="flex flex-col gap-2">
+      <span class="text-md font-normal text-black">15 Minutes</span>
+      <button
+        type="button"
+        class="rounded-2xl bg-colorNavLink text-white px-8 py-1 font-semibold hover:bg-blue-700 transition"
+        (click)="startQuiz()"
+      >
+        Start
+      </button>
     </div>
   </div>
-
-  <div class="flex flex-col gap-2">
-    <span class="text-md font-normal text-black">15 Minutes</span>
-    <button type="button"  class="rounded-2xl bg-colorNavLink text-white px-8 py-1" aria-haspopup="dialog" aria-expanded="false" aria-controls="middle-center-modal" data-overlay="#middle-center-modal">Start</button>
-  </div>
-</div>
-
-
 </section>
 
-
-<h2 class="text-lg font-medium text-black mb-6">Front-End Quiz</h2>
-<section class="bg-colorBackground lg:bg-white w-full px-4 py-8 md:px-6 lg:px-8 rounded-xl lg:shadow-md">
-
-<div class="flex justify-between items-center">
-  <div class="flex gap-4 items-center">
-    <img src="/icons/html.png" alt="">
-
-    <div class="flex flex-col gap-1">
-      <h2 class="text-lg font-medium text-black">HTML</h2>
-      <span class="text-md font-normal text-gray-600">20 Questions</span>
-    </div>
-  </div>
-
-  <div class="flex flex-col gap-2">
-    <span class="text-md font-normal text-black">15 Minutes</span>
-    <button type="button"  class="rounded-2xl bg-colorNavLink text-white px-8 py-1" aria-haspopup="dialog" aria-expanded="false" aria-controls="middle-center-modal" data-overlay="#middle-center-modal">Start</button>
-
-  </div>
-</div>
-</section>
-
-
-
-
-<div id="middle-center-modal" class="overlay modal overlay-open:opacity-100 overlay-open:duration-300 modal-middle hidden [--overlay-backdrop:static] overlay-backdrop-open:bg-black/80" role="dialog" tabindex="-1">
-  <div class="modal-dialog overlay-open:opacity-100 overlay-open:duration-300">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">Dialog Title</h3>
-        <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3" aria-label="Close" data-overlay="#middle-center-modal">
-          <span class="icon-[tabler--x] size-4"></span>
-        </button>
-      </div>
-      <div class="modal-body">
-        This is some placeholder content to show the scrolling behavior for modals. Instead of repeating the text in the
-        modal, we use an inline style to set a minimum height, thereby extending the length of the overall modal and
-        demonstrating the overflow scrolling. When content becomes longer than the height of the viewport, scrolling
-        will move the modal as needed.
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-soft btn-secondary" data-overlay="#middle-center-modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+@if (isQuizStarted) {
+<div
+  class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+>
+  <div class="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] flex flex-col">
+    <div class="flex-1 overflow-y-auto p-6">
+      <app-questions
+        (quizCompleted)="completeQuiz()"
+        (quizClosed)="closeQuiz()"
+      />
     </div>
   </div>
 </div>
+}

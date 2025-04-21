@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 interface Card {
   id: string;
@@ -10,7 +11,7 @@ interface Card {
 
 @Component({
   selector: 'app-sec-quizzes',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './sec-quizzes.component.html',
   styleUrl: './sec-quizzes.component.scss'
 })
