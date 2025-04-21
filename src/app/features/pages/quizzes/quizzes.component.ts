@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
-import { SubjectsComponent } from "../../layouts/addecations/subjects/subjects.component";
+import { SubjectsComponent } from '../../layouts/additions/subjects/subjects.component';
 
 @Component({
   selector: 'app-quizzes',
   imports: [SubjectsComponent],
   templateUrl: './quizzes.component.html',
-  styleUrl: './quizzes.component.scss'
+  styleUrl: './quizzes.component.scss',
 })
-export class QuizzesComponent {
-
-}
+export class QuizzesComponent {}

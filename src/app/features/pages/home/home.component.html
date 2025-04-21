@@ -1,11 +1,19 @@
+<!-- home.component.html -->
 <section class="flex flex-col items-center justify-center w-full">
-  <section class="bg-colorBackground lg:bg-white w-full px-4 py-8 md:px-6 lg:px-8 rounded-xl lg:shadow-md sm:mb-10">
+  <section
+    class="bg-colorBackground lg:bg-white w-full px-4 py-4 md:px-6 lg:px-8 rounded-xl lg:shadow-md sm:mb-10"
+  >
     <app-sec-user-data />
   </section>
 
-  <section class="bg-colorBackground lg:bg-white w-full px-4 py-8 md:px-6 lg:px-8 rounded-xl lg:shadow-md">
-    <app-sec-quizzes />
+  <section
+    class="bg-colorBackground lg:bg-white w-full px-4 py-8 md:px-6 lg:px-8 rounded-xl lg:shadow-md"
+  >
+    <app-sec-quizzes
+      [quizCards]="quizSubjects()"
+      [isLoading]="isLoading()"
+      [hasLoadedAll]="hasLoadedAll()"
+      (loadAll)="loadAllSubjects()"
+    />
   </section>
-
 </section>
-

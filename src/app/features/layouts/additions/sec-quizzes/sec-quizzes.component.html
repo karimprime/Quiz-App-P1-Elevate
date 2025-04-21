@@ -1,0 +1,97 @@
+<!-- sec-quizzes.component.html -->
+<div class="container mx-auto">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-8">
+    <h2 class="hidden sm:block text-2xl font-semibold text-colorNavLink">
+      Quizzes
+    </h2>
+
+    <button
+      routerLink="/dashboard/quizzes"
+      class="block sm:hidden group text-colorNavLink hover:p-3 lg:px-11 lg:py-3 rounded-2xl text-2xl font-semibold hover:bg-colorNavLink hover:text-white transition-all"
+      aria-label="Start quiz"
+    >
+      <span class="group-hover:hidden transition-all">Quizzes</span>
+      <span class="hidden group-hover:block transition-all">Start Quiz</span>
+    </button>
+
+    @if (!hasLoadedAll) {
+    <button
+      (click)="onLoadAllClick()"
+      [disabled]="isLoading"
+      class="hidden sm:block text-colorNavLink hover:text-primary-800 font-medium text-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+      aria-label="View all quizzes"
+    >
+      @if (isLoading) {
+      <span class="inline-flex items-center gap-2">
+        <i class="fas fa-spinner fa-spin"></i>
+        Loading...
+      </span>
+      } @else {
+      <span>View All</span>
+      }
+    </button>
+    }
+  </div>
+
+  <!-- Content -->
+  @if (isLoading && quizCards.length === 0) {
+  <div class="flex justify-center items-center h-64">
+    <i class="fas fa-spinner fa-spin text-4xl text-colorNavLink"></i>
+  </div>
+  } @else {
+  <div
+    class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+  >
+    @for (card of quizCards; track card.id; let i = $index) {
+    <article
+      @cardAnimation
+      class="relative aspect-square overflow-hidden rounded-xl shadow-lg transition-transform duration-300 hover:scale-[1.02] focus-within:scale-[1.02]"
+      tabindex="0"
+      [style.animation-delay]="i * 50 + 'ms'"
+    >
+      <img
+        [src]="card.image"
+        [alt]="card.altText"
+        class="w-full h-full object-cover"
+        loading="lazy"
+      />
+
+      <div
+        class="absolute inset-0 to-transparent flex flex-col items-center justify-end p-6 w-full"
+      >
+        <div
+          class="bg-colorBackgroundTitleCard backdrop-blur-sm rounded-lg p-4 w-full transition-all duration-300"
+        >
+          <h3 class="text-lg font-bold text-white mb-2">{{ card.title }}</h3>
+          <p class="text-gray-200 font-bold text-sm">{{ card.subtitle }}</p>
+        </div>
+      </div>
+
+      <span
+        class="absolute inset-0 ring-2 ring-inset ring-transparent group-focus:ring-primary-500 rounded-xl pointer-events-none"
+      ></span>
+    </article>
+    }
+  </div>
+  }
+
+  <!-- Mobile View All button -->
+  @if (!hasLoadedAll) {
+  <button
+    (click)="onLoadAllClick()"
+    [disabled]="isLoading"
+    class="sm:hidden mt-7 text-colorNavLink hover:text-primary-800 font-medium text-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+    aria-label="View all quizzes"
+  >
+    @if (isLoading) {
+    <span class="inline-flex items-center gap-2">
+      <i class="fas fa-spinner fa-spin"></i>
+      Loading...
+    </span>
+    } @else {
+    <span>View All</span>
+    }
+  </button>
+  }
+</div>
