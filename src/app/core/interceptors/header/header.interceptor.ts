@@ -1,7 +1,7 @@
 // heading.interceptor.ts
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { PlatFormService } from '../../services/platform/platform.service';
+import { PlatFormService } from '../../../shared/services/platform/platform.service';
 
 export const headingInterceptor: HttpInterceptorFn = (req, next) => {
   const _platformService = inject(PlatFormService);
@@ -10,7 +10,7 @@ export const headingInterceptor: HttpInterceptorFn = (req, next) => {
     const token = localStorage.getItem('userToken');
     if (token) {
       req = req.clone({
-        setHeaders: { token }
+        setHeaders: { token },
       });
     }
   }

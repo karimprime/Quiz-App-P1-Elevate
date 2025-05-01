@@ -1,28 +1,31 @@
 <!-- Not Found Component -->
-<section class="flex flex-col items-center justify-center min-h-screen text-center bg-gray-10">
+<section
+  class="flex flex-col items-center justify-center min-h-screen text-center bg-gray-10"
+>
   <!-- Error Image -->
 
   <img
-  src="/images/404-page-not-found.svg"
-  alt="Page not found illustration"
-  width="480"
-  height="360"
-  class="w-full max-w-md md:max-w-lg object-contain animate-fade-in"
-  loading="lazy"
-  decoding="async"
-/>
+    src="/images/404-page-not-found.svg"
+    alt="Page not found illustration"
+    width="480"
+    height="360"
+    class="w-full max-w-md md:max-w-lg object-contain animate-fade-in"
+    loading="lazy"
+    decoding="async"
+  />
 
   <!-- Error Message -->
   <h1 class="text-5xl font-bold text-gray-800">Oops! Page Not Found</h1>
   <p class="mt-2 text-lg text-gray-600 max-w-xl pb-10">
-    The page you are looking for might have been removed or is temporarily unavailable.
+    The page you are looking for might have been removed or is temporarily
+    unavailable.
   </p>
 
   <!-- Back to Home Button -->
   <app-submit-button
-  routerLink="/dashboard/home"
-  text="Back to Home"
-  type="submit"
-  variant="primary"
-></app-submit-button>
+    routerLink="/dashboard/home"
+    text="Back to Home"
+    type="submit"
+    variant="primary"
+  ></app-submit-button>
 </section>

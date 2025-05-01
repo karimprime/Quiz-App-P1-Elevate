@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { SecUserDataComponent } from '../../layouts/additions/sec-user-data/sec-user-data.component';
-import { SubjectsService } from '../../../core/services/subjects/subjects.service';
+import { SubjectsService } from '../../../shared/services/subjects/subjects.service';
 import { defer } from 'rxjs';
 import { SecSubjectsComponent } from '../../layouts/additions/sec-subjects/sec-subjects.component';
 
