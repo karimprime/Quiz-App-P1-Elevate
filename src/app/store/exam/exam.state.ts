@@ -2,7 +2,7 @@ export type examStatus =
   | 'Not Started'
   | 'Started'
   | 'Completed'
-  | 'Review Answer'
+  | 'Review Answers'
   | 'Closed';
 
 export interface ExamState {

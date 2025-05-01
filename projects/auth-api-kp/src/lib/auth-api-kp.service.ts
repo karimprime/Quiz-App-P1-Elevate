@@ -7,10 +7,9 @@ import { AuthAPIAdaptorService } from './adaptor/auth-api.adaptor';
 import { AuthEndPoint } from './enums/AuthAPI.endPoint';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthApiKpService {
-
   private readonly _httpClient = inject(HttpClient);
   private readonly _authAPIAdaptorService = inject(AuthAPIAdaptorService);
 
@@ -26,7 +25,9 @@ export class AuthApiKpService {
         return adaptedResponse;
       }),
       catchError((error) => {
-        return of({ error: error.message || 'An error occurred during login.' });
+        return of({
+          error: error.message || 'An error occurred during login.',
+        });
       })
     );
   }
@@ -38,7 +39,9 @@ export class AuthApiKpService {
         return adaptedResponse;
       }),
       catchError((error) => {
-        return of({ error: error.message || 'An error occurred during registration.' });
+        return of({
+          error: error.message || 'An error occurred during registration.',
+        });
       })
     );
   }
@@ -49,7 +52,9 @@ export class AuthApiKpService {
         return response;
       }),
       catchError((error) => {
-        return of({ error: error.message || 'An error occurred during forget password.' });
+        return of({
+          error: error.message || 'An error occurred during forget password.',
+        });
       })
     );
   }
@@ -60,7 +65,9 @@ export class AuthApiKpService {
         return response;
       }),
       catchError((error) => {
-        return of({ error: error.message || 'An error occurred during verify code.' });
+        return of({
+          error: error.message || 'An error occurred during verify code.',
+        });
       })
     );
   }
@@ -71,7 +78,9 @@ export class AuthApiKpService {
         return response;
       }),
       catchError((error) => {
-        return of({ error: error.message || 'An error occurred during reset password.' });
+        return of({
+          error: error.message || 'An error occurred during reset password.',
+        });
       })
     );
   }
@@ -84,12 +93,10 @@ export class AuthApiKpService {
         return { message: 'Logged out successfully.' };
       }),
       catchError((error) => {
-        return of({ error: error.message || 'An error occurred during logout.' });
+        return of({
+          error: error.message || 'An error occurred during logout.',
+        });
       })
     );
   }
 }
-
-
-
-

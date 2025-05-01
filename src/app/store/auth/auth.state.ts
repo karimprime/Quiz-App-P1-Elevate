@@ -11,5 +11,5 @@ export const initialAuthState: AuthState = {
   userData: null,
   error: null,
   isLoading: false,
-  isAuthenticated: false
+  isAuthenticated: false,
 };

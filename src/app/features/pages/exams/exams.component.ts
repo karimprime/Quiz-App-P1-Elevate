@@ -1,70 +1,98 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { QuestionsComponent } from '../../layouts/additions/questions/questions.component';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink, RouterModule } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription, tap } from 'rxjs';
 import { ExamsService } from '../../../shared/services/exams/exams.service';
 import { SubmitButtonComponent } from '../../../shared/components/ui/submit-button/submit-button.component';
+import { Store } from '@ngrx/store';
+import * as ExamActions from '@examStore/exam.actions';
+import * as ExamSelector from '@examStore/exam.selector';
+import { CustomModalComponent } from '../../../shared/components/ui/custom-modal/custom-modal.component';
+import { examStatus } from '@examStore/exam.state';
 
 @Component({
   selector: 'app-exams',
   standalone: true,
   imports: [
-    QuestionsComponent,
     RouterModule,
     SubmitButtonComponent,
     RouterLink,
+    CustomModalComponent,
   ],
   templateUrl: './exams.component.html',
   styleUrl: './exams.component.scss',
 })
 export class ExamsComponent implements OnInit, OnDestroy {
-  isQuizStarted = false;
-  exams: any[] = [];
-  loading = false;
-  error: string | null = null;
+  // Convert to signals
+  isQuizStarted = signal(false);
+  exams = signal<any[]>([]);
+  loading = signal(false);
+  error = signal<string | null>(null);
+
   private routeSub!: Subscription;
   subjectId: string | null = null;
 
   private examsService = inject(ExamsService);
   private route = inject(ActivatedRoute);
+  private readonly _store = inject(Store);
 
+  // Use selectSignal for NgRx state
+  isOpen = this._store.selectSignal(ExamSelector.selectExamModal);
+
+  // Watch for modal changes
+  isOpen$!: Observable<boolean>;
+  examStatus$!: Observable<examStatus>;
+
+  eventsChange() {
+    this.isOpen$ = this._store.select(ExamSelector.selectExamModal);
+    this.examStatus$ = this._store.select(ExamSelector.selectExamStatus);
+  }
   ngOnInit() {
     this.routeSub = this.route.params.subscribe((params) => {
       this.subjectId = params['subjectId'];
       if (this.subjectId) {
         this.loadExams(this.subjectId);
       } else {
-        this.error = 'No subject ID provided';
+        this.error.set('No subject ID provided');
       }
     });
+
+    // Watch for modal changes
+    this._store
+      .select(ExamSelector.selectExamModal)
+      .pipe(
+        tap((isOpen) => {
+          this.isQuizStarted.set(isOpen);
+          console.log('Modal state changed:', isOpen);
+        })
+      )
+      .subscribe();
   }
 
   loadExams(subjectId: string) {
-    this.loading = true;
-    this.error = null;
-    this.exams = [];
+    this.loading.set(true);
+    this.error.set(null);
+    this.exams.set([]);
 
     this.examsService.getExamsBySubject(subjectId).subscribe({
       next: (response) => {
-        this.exams = response?.exams || [];
-        console.log('Exams loaded:', this.exams);
-        this.loading = false;
+        this.exams.set(response?.exams || []);
+        console.log('Exams loaded:', this.exams());
+        this.loading.set(false);
       },
       error: (err) => {
-        this.error = 'Failed to load exams. Please try again later.';
-        this.loading = false;
+        this.error.set('Failed to load exams. Please try again later.');
+        this.loading.set(false);
         console.error('Error loading exams:', err);
       },
     });
   }
 
-  startQuiz(examId: string) {
-    this.isQuizStarted = true;
-    console.log('Starting quiz for exam:', examId);
+  startExam() {
+    this._store.dispatch(ExamActions.toggleModal());
   }
 
   completeQuiz() {
-    this.isQuizStarted = false;
+    this.isQuizStarted.set(false);
     alert('Quiz completed!');
   }
 
@@ -74,7 +102,7 @@ export class ExamsComponent implements OnInit, OnDestroy {
         'Are you sure you want to quit the quiz? Your progress will be lost.'
       )
     ) {
-      this.isQuizStarted = false;
+      this.isQuizStarted.set(false);
     }
   }
 

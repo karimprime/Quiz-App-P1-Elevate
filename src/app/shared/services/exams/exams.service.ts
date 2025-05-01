@@ -1,28 +1,53 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from '../../../environment/environment.prod';
+import { MainAPIAdapter } from '../../../core/adapter/main-adapter';
+import { Endpoints } from '../../../core/enums/endpoints';
+import {
+  ExamsAdaptResponse,
+  ExamsResponse,
+  Exam,
+  CreateExamRequest,
+} from '../../../core/interfaces/exam.interface';
+import { ErrorResponse } from '../../../core/interfaces/errors';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ExamsService {
-  private httpClient = inject(HttpClient);
-  private readonly apiUrl = `${environment.baseApiUrl}/exams`;
+  private _httpClient = inject(HttpClient);
+  private readonly _mainAPIAdapter = inject(MainAPIAdapter);
 
-  createExam(examData: any): Observable<any> {
-    return this.httpClient.post<any>(this.apiUrl, examData);
+  createExam(examData: CreateExamRequest): Observable<Exam> {
+    return this._httpClient
+      .post<Exam>(environment.baseApiUrl + '/' + Endpoints.Exams, examData)
+      .pipe(catchError((err: ErrorResponse) => throwError(() => err)));
   }
 
-  getAllExams(): Observable<any> {
-    return this.httpClient.get<any>(this.apiUrl);
+  getAllExams(): Observable<ExamsAdaptResponse> {
+    return this._httpClient
+      .get<ExamsResponse>(environment.baseApiUrl + '/' + Endpoints.Exams)
+      .pipe(
+        map((res: ExamsResponse) => this._mainAPIAdapter.examAdapter(res)),
+        catchError((err: ErrorResponse) => throwError(() => err))
+      );
   }
 
-  getExamsBySubject(subjectId: string): Observable<any> {
-    return this.httpClient.get<any>(`${this.apiUrl}?subject=${subjectId}`);
+  getExamsBySubject(subjectId: string): Observable<ExamsAdaptResponse> {
+    return this._httpClient
+      .get<ExamsResponse>(
+        environment.baseApiUrl + '/' + Endpoints.ExamsBySubject + subjectId
+      )
+      .pipe(
+        map((res: ExamsResponse) => this._mainAPIAdapter.examAdapter(res)),
+        catchError((err: ErrorResponse) => throwError(() => err))
+      );
   }
 
-  getExamById(examId: string): Observable<any> {
-    return this.httpClient.get<any>(`${this.apiUrl}/${examId}`);
+  getExamById(examId: string): Observable<Exam> {
+    return this._httpClient
+      .get<Exam>(environment.baseApiUrl + '/' + Endpoints.ExamsByID + examId)
+      .pipe(catchError((err: ErrorResponse) => throwError(() => err)));
   }
 }

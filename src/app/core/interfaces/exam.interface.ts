@@ -20,3 +20,15 @@ export interface ExamsAdaptResponse {
   message: string;
   exams: Exam[];
 }
+
+export interface CreateExamRequest {
+  title: string;
+  duration: number;
+  subject: string;
+  numberOfQuestions: number;
+}
+
+export interface SingleExamResponse {
+  message: string;
+  exam: Exam;
+}
