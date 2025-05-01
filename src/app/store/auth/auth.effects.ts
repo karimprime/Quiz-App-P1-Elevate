@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { tap, switchMap, map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
-import { NotificationService } from '../shared/services/notification/notification.service';
+
 import { AuthApiKpService } from 'auth-api-kp';
 import {
   login,
@@ -14,6 +14,7 @@ import {
   registerFailure,
   logout,
 } from './auth.actions';
+import { NotificationService } from '../../shared/services/notification/notification.service';
 
 const USER_TOKEN_KEY = 'userToken';
 
@@ -140,7 +141,9 @@ export const registerEffect = createEffect(
             }
             return registerFailure({ error: 'Registration failed' });
           }),
-          catchError(() => of(registerFailure({ error: 'Registration failed' })))
+          catchError(() =>
+            of(registerFailure({ error: 'Registration failed' }))
+          )
         )
       )
     );

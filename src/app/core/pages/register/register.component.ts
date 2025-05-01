@@ -1,11 +1,20 @@
 import { Component, inject, signal } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthApiKpService } from 'auth-api-kp';
 import { Store } from '@ngrx/store';
-import { registerFailure, registerSuccess } from '../../../store/auth.actions';
-import { SubmitButtonComponent } from "../../../shared/components/ui/submit-button/submit-button.component";
+import { SubmitButtonComponent } from '../../../shared/components/ui/submit-button/submit-button.component';
+import {
+  registerFailure,
+  registerSuccess,
+} from '../../../store/auth/auth.actions';
 
 @Component({
   selector: 'app-register',
@@ -17,7 +26,6 @@ export class RegisterComponent {
   private readonly _authApiKpService = inject(AuthApiKpService);
   private readonly _store = inject(Store);
   private readonly _router = inject(Router);
-
 
   apiError = signal<string>('');
   isLoading = signal<boolean>(false);
@@ -37,14 +45,31 @@ export class RegisterComponent {
 
   registerForm: FormGroup = new FormGroup(
     {
-      username: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
-      firstName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
-      lastName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
+      username: new FormControl('', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(30),
+      ]),
+      firstName: new FormControl('', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(30),
+      ]),
+      lastName: new FormControl('', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(30),
+      ]),
       email: new FormControl('', [Validators.required, Validators.email]),
-      phone: new FormControl('', [Validators.required, Validators.pattern('^(01)[0125][0-9]{8}$')]),
+      phone: new FormControl('', [
+        Validators.required,
+        Validators.pattern('^(01)[0125][0-9]{8}$'),
+      ]),
       password: new FormControl('', [
         Validators.required,
-        Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'),
+        Validators.pattern(
+          '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'
+        ),
       ]),
       rePassword: new FormControl('', [Validators.required]),
     },
@@ -78,7 +103,13 @@ export class RegisterComponent {
     this.hasNumber.set(hasNumber);
     this.hasSpecialChar.set(hasSpecialChar);
 
-    const points = [isMinLengthMet, hasLowercase, hasUppercase, hasNumber, hasSpecialChar].filter(Boolean).length;
+    const points = [
+      isMinLengthMet,
+      hasLowercase,
+      hasUppercase,
+      hasNumber,
+      hasSpecialChar,
+    ].filter(Boolean).length;
     this.strengthLevel.set(points);
   }
 
@@ -119,24 +150,31 @@ export class RegisterComponent {
     this.isLoading.set(true);
     this.apiError.set('');
 
-    this.registerSub = this._authApiKpService.register(this.registerForm.value).subscribe({
-
+    this.registerSub = this._authApiKpService
+      .register(this.registerForm.value)
+      .subscribe({
         next: (res) => {
-              if ('token' in res && res.message === 'success') {
-                this._store.dispatch(registerSuccess(res));
-                this._router.navigate(['/auth-layout/login']);
-              } else {
-                this.apiError.set('Registration failed. Please check your details and try again.');
-                this._store.dispatch(registerFailure({ error: this.apiError() }));
-              }
-            },
-            error: (err) => {
-              this._store.dispatch(registerFailure({ error: 'Registration failed. Please check your details and try again.' }));
-            },
-            complete: () => {
-              this.isLoading.set(false);
-            },
-          });
-        }
+          if ('token' in res && res.message === 'success') {
+            this._store.dispatch(registerSuccess(res));
+            this._router.navigate(['/auth-layout/login']);
+          } else {
+            this.apiError.set(
+              'Registration failed. Please check your details and try again.'
+            );
+            this._store.dispatch(registerFailure({ error: this.apiError() }));
+          }
+        },
+        error: (err) => {
+          this._store.dispatch(
+            registerFailure({
+              error:
+                'Registration failed. Please check your details and try again.',
+            })
+          );
+        },
+        complete: () => {
+          this.isLoading.set(false);
+        },
+      });
+  }
 }
-

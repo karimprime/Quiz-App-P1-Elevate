@@ -1,28 +1,14 @@
-// home.component.ts
 import { Component, inject, signal } from '@angular/core';
 import { SecUserDataComponent } from '../../layouts/additions/sec-user-data/sec-user-data.component';
-import { SecQuizzesComponent } from '../../layouts/additions/sec-quizzes/sec-quizzes.component';
 import { SubjectsService } from '../../../core/services/subjects/subjects.service';
-import { animate, style, transition, trigger } from '@angular/animations';
 import { defer } from 'rxjs';
+import { SecSubjectsComponent } from '../../layouts/additions/sec-subjects/sec-subjects.component';
 
 @Component({
   selector: 'app-home',
-  standalone: true,
-  imports: [SecUserDataComponent, SecQuizzesComponent],
+  imports: [SecUserDataComponent, SecSubjectsComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
-  animations: [
-    trigger('fadeIn', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(20px)' }),
-        animate(
-          '300ms ease-out',
-          style({ opacity: 1, transform: 'translateY(0)' })
-        ),
-      ]),
-    ]),
-  ],
 })
 export class HomeComponent {
   private readonly _subjectsService = inject(SubjectsService);

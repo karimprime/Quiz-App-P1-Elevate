@@ -7,8 +7,9 @@ import { Subscription } from 'rxjs';
 import { AuthApiKpService } from 'auth-api-kp';
 
 import { Store } from '@ngrx/store';
-import { loginFailure, loginSuccess } from '../../../store/auth.actions';
+
 import { SubmitButtonComponent } from "../../../shared/components/ui/submit-button/submit-button.component";
+import { loginFailure, loginSuccess } from '../../../store/auth/auth.actions';
 
 @Component({
   selector: 'app-login',

@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { QuestionsComponent } from '../questions/questions.component';
+import { QuestionsComponent } from '../../layouts/additions/questions/questions.component';
 
 @Component({
-  selector: 'app-subjects',
+  selector: 'app-exams',
   imports: [QuestionsComponent],
-  templateUrl: './subjects.component.html',
-  styleUrl: './subjects.component.scss',
+  templateUrl: './exams.component.html',
+  styleUrl: './exams.component.scss'
 })
-export class SubjectsComponent {
+export class ExamsComponent {
   isQuizStarted = false;
 
   startQuiz() {
@@ -16,7 +16,6 @@ export class SubjectsComponent {
 
   completeQuiz() {
     this.isQuizStarted = false;
-    // Handle quiz completion logic
     alert('Quiz completed!');
   }
 

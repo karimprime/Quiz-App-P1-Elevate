@@ -7,12 +7,13 @@ import { Observable, shareReplay } from 'rxjs';
 })
 export class SubjectsService {
   private httpClient = inject(HttpClient);
-  private cache = new Map<number, Observable<any>>();
+  private cache = new Map<string | number, Observable<any>>();
 
   getAllPSubjects(numSubjects: number = 10): Observable<any> {
-    if (!this.cache.has(numSubjects)) {
+    const cacheKey = `all_${numSubjects}`;
+    if (!this.cache.has(cacheKey)) {
       this.cache.set(
-        numSubjects,
+        cacheKey,
         this.httpClient
           .get<any>(
             `https://exam.elevateegy.com/api/v1/subjects?limit=${numSubjects}`
@@ -20,6 +21,18 @@ export class SubjectsService {
           .pipe(shareReplay(1))
       );
     }
-    return this.cache.get(numSubjects)!;
+    return this.cache.get(cacheKey)!;
+  }
+
+  getSubjectById(id: string): Observable<any> {
+    if (!this.cache.has(id)) {
+      this.cache.set(
+        id,
+        this.httpClient
+          .get<any>(`https://exam.elevateegy.com/api/v1/exams${id}`)
+          .pipe(shareReplay(1))
+      );
+    }
+    return this.cache.get(id)!;
   }
 }

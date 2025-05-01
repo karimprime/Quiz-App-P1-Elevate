@@ -1,14 +1,12 @@
-// sec-quizzes.component.ts
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
 
+import { RouterLink } from '@angular/router';
 @Component({
-  selector: 'app-sec-quizzes',
-  standalone: true,
+  selector: 'app-sec-subjects',
   imports: [RouterLink],
-  templateUrl: './sec-quizzes.component.html',
-  styleUrl: './sec-quizzes.component.scss',
+  templateUrl: './sec-subjects.component.html',
+  styleUrl: './sec-subjects.component.scss',
   animations: [
     trigger('cardAnimation', [
       transition(':enter', [
@@ -18,8 +16,9 @@ import { animate, style, transition, trigger } from '@angular/animations';
     ]),
   ],
 })
-export class SecQuizzesComponent {
+export class SecSubjectsComponent {
   @Input() quizCards: any[] = [];
+  @Input() quiz: any[] = [];
   @Input() isLoading = false;
   @Input() hasLoadedAll = false;
   @Output() loadAll = new EventEmitter<void>();
