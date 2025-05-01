@@ -17,7 +17,7 @@ export class HomeComponent {
   quizSubjects = signal<any[]>([]);
   isLoading = signal(false);
   hasLoadedAll = signal(false);
-
+  totalSubjects = signal(0);
   ngOnInit() {
     this.loadInitialSubjects();
   }
@@ -28,15 +28,18 @@ export class HomeComponent {
       this._subjectsService.getAllPSubjects(this.numSubjects())
     ).subscribe({
       next: (res: any) => {
-        this.quizSubjects.set(
-          res.subjects.map((subject: any) => ({
-            id: subject._id,
-            title: subject.name,
-            image: subject.icon,
-            altText: `${subject.name} quiz`,
-            subtitle: `Test your ${subject.name} knowledge`,
-          }))
-        );
+        const mappedSubjects = res.subjects.map((subject: any) => ({
+          id: subject._id,
+          title: subject.name,
+          image: subject.icon,
+          altText: `${subject.name} quiz`,
+          subtitle: `Test your ${subject.name} knowledge`,
+        }));
+        this.quizSubjects.set(mappedSubjects);
+        this.totalSubjects.set(res.total);
+        if (mappedSubjects.length === res.total) {
+          this.hasLoadedAll.set(true);
+        }
         this.isLoading.set(false);
       },
       error: (err: any) => {
@@ -48,23 +51,19 @@ export class HomeComponent {
 
   loadAllSubjects() {
     if (this.hasLoadedAll()) return;
-
     this.isLoading.set(true);
-    this.numSubjects.set(10);
-
     defer(() =>
-      this._subjectsService.getAllPSubjects(this.numSubjects())
+      this._subjectsService.getAllPSubjects(this.totalSubjects())
     ).subscribe({
       next: (res: any) => {
-        this.quizSubjects.set(
-          res.subjects.map((subject: any) => ({
-            id: subject._id,
-            title: subject.name,
-            image: subject.icon,
-            altText: `${subject.name} quiz`,
-            subtitle: `Test your ${subject.name} knowledge`,
-          }))
-        );
+        const mappedSubjects = res.subjects.map((subject: any) => ({
+          id: subject._id,
+          title: subject.name,
+          image: subject.icon,
+          altText: `${subject.name} quiz`,
+          subtitle: `Test your ${subject.name} knowledge`,
+        }));
+        this.quizSubjects.set(mappedSubjects);
         this.isLoading.set(false);
         this.hasLoadedAll.set(true);
       },

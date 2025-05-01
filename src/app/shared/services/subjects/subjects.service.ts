@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../../core/environment/environment';
+import { environment } from '../../../environment/environment.prod';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +10,7 @@ export class SubjectsService {
   private httpClient = inject(HttpClient);
   private readonly apiUrl = `${environment.baseApiUrl}/subjects`;
 
-  getAllPSubjects(numSubjects: number = 10): Observable<any> {
+  getAllPSubjects(numSubjects: number): Observable<any> {
     return this.httpClient.get<any>(`${this.apiUrl}?limit=${numSubjects}`);
   }
 

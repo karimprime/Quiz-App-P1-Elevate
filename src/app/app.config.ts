@@ -28,6 +28,7 @@ import {
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { headingInterceptor } from './core/interceptors/header/header.interceptor';
 import { authReducer } from './store/auth/auth.reducer';
+import { examReducer } from './store/exam/exam.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -39,7 +40,10 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
     provideHttpClient(withInterceptors([headingInterceptor])),
     provideAnimations(),
-    provideStore({ auth: authReducer }),
+    provideStore({
+      auth: authReducer,
+      exam: examReducer,
+    }),
     provideEffects({
       saveToken: saveTokenEffect,
       removeToken: removeTokenEffect,
