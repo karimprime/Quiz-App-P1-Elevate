@@ -4,80 +4,89 @@
   <p>Loading exams...</p>
 </div>
 } @if (error()) {
-<h2 class="text-lg font-medium text-black mb-6">No Exams Available</h2>
-<div class="my-4 flex flex-col items-center justify-center text-center">
-  <div>
-    <img
-      src="/images/notfoundexam.png"
-      alt="Page not found Exams"
-      class="w-full max-w-md md:max-w-lg object-contain animate-fade-in"
-      loading="lazy"
-      decoding="async"
-    />
-    <span class="text-3xl font-bold text-gray-800">{{ error() }}</span>
+
+<div class="mx-8 my-4 sm:mx-12 sm:my-2">
+  <h2 class="text-lg font-medium text-black mb-6">No Exams Available</h2>
+  <div class="my-4 flex flex-col items-center justify-center text-center">
+    <div>
+      <img
+        src="/images/notfoundexam.png"
+        alt="Page not found Exams"
+        class="w-full max-w-md md:max-w-lg object-contain animate-fade-in"
+        loading="lazy"
+        decoding="async"
+      />
+      <span class="text-3xl font-bold text-gray-800">{{ error() }}</span>
+    </div>
+    <app-submit-button
+      class="mt-8"
+      routerLink="/dashboard/home"
+      text="Back to Home"
+      type="submit"
+      variant="primary"
+    ></app-submit-button>
   </div>
-  <app-submit-button
-    class="mt-8"
-    routerLink="/dashboard/home"
-    text="Back to Home"
-    type="submit"
-    variant="primary"
-  ></app-submit-button>
 </div>
 } @if (!loading() && !error() && exams().length === 0) {
-<h2 class="text-lg font-medium text-black mb-6">No Exams Available</h2>
-<div class="my-4 flex flex-col items-center justify-center text-center">
-  <div>
-    <img
-      src="/images/notfoundexam.png"
-      alt="Page not found Exams"
-      class="w-full max-w-md md:max-w-lg object-contain animate-fade-in"
-      loading="lazy"
-      decoding="async"
-    />
-    <span class="text-3xl font-bold text-gray-800"
-      >No exams available for this subject</span
-    >
+<div class="mx-8 my-4 sm:mx-12 sm:my-2">
+  <h2 class="text-lg font-medium text-black mb-6">No Exams Available</h2>
+  <div class="my-4 flex flex-col items-center justify-center text-center">
+    <div>
+      <img
+        src="/images/notfoundexam.png"
+        alt="Page not found Exams"
+        class="w-full max-w-md md:max-w-lg object-contain animate-fade-in"
+        loading="lazy"
+        decoding="async"
+      />
+      <span class="text-3xl font-bold text-gray-800"
+        >No exams available for this subject</span
+      >
+    </div>
+    <app-submit-button
+      class="mt-8"
+      routerLink="/dashboard/home"
+      text="Back to Home"
+      type="submit"
+      variant="primary"
+    ></app-submit-button>
   </div>
-  <app-submit-button
-    class="mt-8"
-    routerLink="/dashboard/home"
-    text="Back to Home"
-    type="submit"
-    variant="primary"
-  ></app-submit-button>
 </div>
+
 } @for (exam of exams(); track exam._id) {
-<h2 class="text-lg font-medium text-black mb-6">Available Exams</h2>
-<section
-  class="bg-colorBackground lg:bg-white w-full px-4 py-8 md:px-6 lg:px-8 rounded-xl lg:shadow-md mb-10"
->
-  <div class="flex justify-between items-center">
-    <div class="flex gap-4 items-center">
-      <i
-        class="fa-solid fa-book text-4xl text-white bg-colorNavLink p-3 rounded-2xl"
-      ></i>
-      <div class="flex flex-col gap-1">
-        <h2 class="text-lg font-medium text-black">{{ exam.title }}</h2>
-        <span class="text-md font-normal text-gray-600">
-          {{ exam.numberOfQuestions || 0 }} Questions
+<div class="mx-2 my-4 sm:mx-10">
+  <h2 class="text-lg font-medium text-black mb-6">Available Exams</h2>
+  <section
+    class="bg-colorBackground lg:bg-white w-full px-4 py-8 md:px-6 lg:px-8 rounded-xl lg:shadow-md mb-10"
+  >
+    <div class="flex justify-between items-center">
+      <div class="flex gap-4 items-center">
+        <i
+          class="fa-solid fa-book text-4xl text-white bg-colorNavLink p-3 rounded-2xl"
+        ></i>
+        <div class="flex flex-col gap-1">
+          <h2 class="text-lg font-medium text-black">{{ exam.title }}</h2>
+          <span class="text-md font-normal text-gray-600">
+            {{ exam.numberOfQuestions || 0 }} Questions
+          </span>
+        </div>
+      </div>
+      <div class="flex flex-col gap-2 items-center">
+        <span class="text-md font-normal text-black">
+          {{ exam.duration || 15 }} Minutes
         </span>
+        <button
+          type="button"
+          class="rounded-2xl bg-colorNavLink text-white px-8 py-1 font-semibold hover:bg-blue-700 transition"
+          (click)="startExam()"
+        >
+          Start
+        </button>
       </div>
     </div>
-    <div class="flex flex-col gap-2 items-center">
-      <span class="text-md font-normal text-black">
-        {{ exam.duration || 15 }} Minutes
-      </span>
-      <button
-        type="button"
-        class="rounded-2xl bg-colorNavLink text-white px-8 py-1 font-semibold hover:bg-blue-700 transition"
-        (click)="startExam()"
-      >
-        Start
-      </button>
-    </div>
-  </div>
-</section>
+  </section>
+</div>
+
 } @if (isOpen()) {
 <app-custom-modal />
 }
