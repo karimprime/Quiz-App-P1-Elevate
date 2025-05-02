@@ -1,5 +1,4 @@
 <div class="container mx-auto px-4 w-full">
-  <!-- Added px-4 and w-full -->
   <!-- Header -->
   <div class="flex justify-between items-center mb-8 w-full">
     <h2 class="hidden sm:block text-2xl font-semibold text-colorNavLink">
@@ -79,7 +78,7 @@
   <button
     (click)="onLoadAllClick()"
     [disabled]="isLoading"
-    class="sm:hidden mt-7 w-full text-colorNavLink hover:text-primary-800 font-medium text-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+    class="sm:hidden mt-7 w-full text-left text-colorNavLink hover:text-primary-800 font-medium text-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
     aria-label="View all quizzes"
   >
     @if (isLoading) {
@@ -88,7 +87,7 @@
       Loading...
     </span>
     } @else {
-    <span>View All</span>
+    <span class="text-left">View All</span>
     }
   </button>
   }
