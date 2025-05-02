@@ -1,7 +1,14 @@
-<!-- Full Page Trans bg black 0.6 -->
-<div id="customModal" class="modal">
-  <!-- White bg  "wrapper of ng-content" -->
-  <div class="modal-content">
+<div
+  class="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center"
+>
+  <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
     <ng-content></ng-content>
+
+    <button
+      class="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+      (click)="closeModal()"
+    >
+      Close
+    </button>
   </div>
 </div>

@@ -1,4 +1,6 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Store } from '@ngrx/store';
+import * as ExamActions from '@examStore/exam.actions';
 
 @Component({
   selector: 'app-custom-modal',
@@ -7,14 +9,9 @@ import { Component, EventEmitter, Output } from '@angular/core';
   styleUrl: './custom-modal.component.scss',
 })
 export class CustomModalComponent {
-  @Output() modalClosed = new EventEmitter<void>();
-  @Output() examStarted = new EventEmitter<void>();
+  private readonly _store = inject(Store);
 
   closeModal() {
-    this.modalClosed.emit();
-  }
-
-  startExam() {
-    this.examStarted.emit();
+    this._store.dispatch(ExamActions.toggleModal());
   }
 }

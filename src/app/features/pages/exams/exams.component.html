@@ -4,7 +4,6 @@
   <p>Loading exams...</p>
 </div>
 } @if (error()) {
-
 <div class="mx-8 my-4 sm:mx-12 sm:my-2">
   <h2 class="text-lg font-medium text-black mb-6">No Exams Available</h2>
   <div class="my-4 flex flex-col items-center justify-center text-center">
@@ -52,7 +51,6 @@
     ></app-submit-button>
   </div>
 </div>
-
 } @for (exam of exams(); track exam._id) {
 <div class="mx-2 my-4 sm:mx-10">
   <h2 class="text-lg font-medium text-black mb-6">Available Exams</h2>
@@ -86,7 +84,8 @@
     </div>
   </section>
 </div>
-
 } @if (isOpen()) {
-<app-custom-modal />
+<app-custom-modal>
+  <p>Exam is starting now!</p>
+</app-custom-modal>
 }

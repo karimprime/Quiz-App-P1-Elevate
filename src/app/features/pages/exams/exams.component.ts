@@ -22,7 +22,6 @@ import { examStatus } from '@examStore/exam.state';
   styleUrl: './exams.component.scss',
 })
 export class ExamsComponent implements OnInit, OnDestroy {
-  // Convert to signals
   isQuizStarted = signal(false);
   exams = signal<any[]>([]);
   loading = signal(false);
@@ -35,17 +34,8 @@ export class ExamsComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private readonly _store = inject(Store);
 
-  // Use selectSignal for NgRx state
   isOpen = this._store.selectSignal(ExamSelector.selectExamModal);
 
-  // Watch for modal changes
-  isOpen$!: Observable<boolean>;
-  examStatus$!: Observable<examStatus>;
-
-  eventsChange() {
-    this.isOpen$ = this._store.select(ExamSelector.selectExamModal);
-    this.examStatus$ = this._store.select(ExamSelector.selectExamStatus);
-  }
   ngOnInit() {
     this.routeSub = this.route.params.subscribe((params) => {
       this.subjectId = params['subjectId'];
@@ -56,7 +46,6 @@ export class ExamsComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Watch for modal changes
     this._store
       .select(ExamSelector.selectExamModal)
       .pipe(
@@ -89,21 +78,6 @@ export class ExamsComponent implements OnInit, OnDestroy {
 
   startExam() {
     this._store.dispatch(ExamActions.toggleModal());
-  }
-
-  completeQuiz() {
-    this.isQuizStarted.set(false);
-    alert('Quiz completed!');
-  }
-
-  closeQuiz() {
-    if (
-      confirm(
-        'Are you sure you want to quit the quiz? Your progress will be lost.'
-      )
-    ) {
-      this.isQuizStarted.set(false);
-    }
   }
 
   ngOnDestroy() {
