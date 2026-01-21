@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.2.3",
-    "@angular/cli": "^19.2.1",
+    "@angular/cli": "^21.1.0",
     "@angular/compiler-cli": "^19.2.0",
     "@iconify/json": "^2.2.317",
     "@iconify/tailwind": "^1.2.0",
