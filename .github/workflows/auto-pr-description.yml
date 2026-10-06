@@ -128,12 +128,18 @@ jobs:
               '6. Write clear, professional English.'
             ].join('\n');
 
-            const models = ['gemini-3.8-flash'];
-            const MAX_RETRIES = 3;
+            const models = [
+              'gemini-3.8-flash',
+              'gemini-3.7-flash',
+              'gemini-3.6-flash',
+              'gemini-3.5-flash-lite'
+            ];
+            const MAX_RETRIES = 2;
             let response;
             let lastError = null;
 
             for (const model of models) {
+              console.log(`Trying model: ${model}`);
               for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
                 try {
                   console.log(`Attempt ${attempt}/${MAX_RETRIES} with model ${model}...`);
@@ -163,34 +169,64 @@ jobs:
                   lastError = `Model ${model} attempt ${attempt} failed (${response.status}): ${errText}`;
                   console.log(lastError);
 
-                  // Retry on transient errors (503 UNAVAILABLE, 429 RATE_LIMIT)
+                  // Retry once on transient errors (503 UNAVAILABLE, 429 RATE_LIMIT), then move to next model
                   if ((response.status === 503 || response.status === 429) && attempt < MAX_RETRIES) {
-                    const delay = Math.pow(2, attempt) * 1000;
-                    console.log(`Retrying in ${delay / 1000}s...`);
+                    const delay = 2000;
+                    console.log(`Retrying ${model} in ${delay / 1000}s...`);
                     await new Promise(r => setTimeout(r, delay));
                     continue;
                   }
-                  break; // Non-retryable error, try next model
+                  break; // Move to next model
                 } catch (e) {
                   lastError = `Model ${model} attempt ${attempt} error: ${e.message}`;
                   console.log(lastError);
                   if (attempt < MAX_RETRIES) {
-                    const delay = Math.pow(2, attempt) * 1000;
-                    await new Promise(r => setTimeout(r, delay));
+                    await new Promise(r => setTimeout(r, 2000));
                   }
                 }
               }
               if (response && response.ok) break;
             }
 
-            if (!response || !response.ok) {
-              throw new Error(`Gemini API failed after retries. Last error: ${lastError}`);
+            let generatedText = '';
+            if (response && response.ok) {
+              const data = await response.json();
+              generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
             }
 
-            const data = await response.json();
-            let generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
             if (!generatedText) {
-              throw new Error('No content returned from Gemini API');
+              console.warn(`All Gemini models failed or returned empty content. Last error: ${lastError}`);
+              console.log('Generating fallback PR description from git metadata...');
+
+              const fileRows = (changedFiles || '').split('\n')
+                .filter(Boolean)
+                .map(line => {
+                  const parts = line.trim().split(/\s+/);
+                  const status = parts[0];
+                  const file = parts.slice(1).join(' ');
+                  const action = status === 'A' ? 'Added new file' : status === 'D' ? 'Removed file' : 'Updated file';
+                  return `| \`${file}\` | ${action} |`;
+                }).join('\n');
+
+              generatedText = [
+                '## Description',
+                commits ? commits.split('\n')[0] : 'Automated PR update based on changes.',
+                '',
+                '## Related Issue',
+                'Closes #',
+                '',
+                '## Commit — chore: 🤖 automated description',
+                '',
+                '**Problem:** Temporary AI model capacity spike or service unavailability.',
+                '',
+                '**Fix:** Generated baseline PR description from git commits and changed files.',
+                '',
+                '### What Changed → Why',
+                '',
+                '| File | Change |',
+                '| :--- | :--- |',
+                fileRows || '| `changes` | Various updates |'
+              ].join('\n');
             }
 
             generatedText = generatedText.trim();
