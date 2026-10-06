@@ -128,44 +128,63 @@ jobs:
               '6. Write clear, professional English.'
             ].join('\n');
 
-            const models = ['gemini-3.8-flash', 'gemini-2.5-flash'];
+            const models = ['gemini-3.8-flash'];
+            const MAX_RETRIES = 3;
             let response;
             let lastError = null;
 
             for (const model of models) {
-              try {
-                response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'x-goog-api-key': apiKey
-                  },
-                  body: JSON.stringify({
-                    contents: [{
-                      parts: [{ text: prompt }]
-                    }],
-                    generationConfig: {
-                      temperature: 0.2,
-                      maxOutputTokens: 2048
-                    }
-                  })
-                });
+              for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+                try {
+                  console.log(`Attempt ${attempt}/${MAX_RETRIES} with model ${model}...`);
+                  response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'x-goog-api-key': apiKey
+                    },
+                    body: JSON.stringify({
+                      contents: [{
+                        parts: [{ text: prompt }]
+                      }],
+                      generationConfig: {
+                        temperature: 0.2,
+                        maxOutputTokens: 2048
+                      }
+                    })
+                  });
 
-                if (response.ok) {
-                  break;
-                } else {
+                  if (response.ok) {
+                    console.log(`Success on attempt ${attempt} with ${model}.`);
+                    break;
+                  }
+
                   const errText = await response.text();
-                  lastError = `Model ${model} failed (${response.status}): ${errText}`;
+                  lastError = `Model ${model} attempt ${attempt} failed (${response.status}): ${errText}`;
                   console.log(lastError);
+
+                  // Retry on transient errors (503 UNAVAILABLE, 429 RATE_LIMIT)
+                  if ((response.status === 503 || response.status === 429) && attempt < MAX_RETRIES) {
+                    const delay = Math.pow(2, attempt) * 1000;
+                    console.log(`Retrying in ${delay / 1000}s...`);
+                    await new Promise(r => setTimeout(r, delay));
+                    continue;
+                  }
+                  break; // Non-retryable error, try next model
+                } catch (e) {
+                  lastError = `Model ${model} attempt ${attempt} error: ${e.message}`;
+                  console.log(lastError);
+                  if (attempt < MAX_RETRIES) {
+                    const delay = Math.pow(2, attempt) * 1000;
+                    await new Promise(r => setTimeout(r, delay));
+                  }
                 }
-              } catch (e) {
-                lastError = `Model ${model} request error: ${e.message}`;
-                console.log(lastError);
               }
+              if (response && response.ok) break;
             }
 
             if (!response || !response.ok) {
-              throw new Error(`All Gemini models failed. Last error: ${lastError}`);
+              throw new Error(`Gemini API failed after retries. Last error: ${lastError}`);
             }
 
             const data = await response.json();
