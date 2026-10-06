@@ -1,221 +1,221 @@
 name: Auto PR Description
 
 on:
-    pull_request:
-        types: [opened, synchronize]
+  pull_request:
+    types: [opened, synchronize]
 
 concurrency:
-    group: pr-desc-${{ github.event.pull_request.number }}
-    cancel-in-progress: true
+  group: pr-desc-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 permissions:
-    pull-requests: write
-    contents: read
-    issues: write
+  pull-requests: write
+  contents: read
+  issues: write
 
 jobs:
-    generate-description:
-        name: Generate & Update PR Description
-        runs-on: ubuntu-latest
-        if: github.actor != 'dependabot[bot]'
-        steps:
-            - name: Checkout Code
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
+  generate-description:
+    name: Generate & Update PR Description
+    runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-            - name: Setup Node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 20
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-            - name: Generate PR Description via Gemini
-              id: generate
-              env:
-                  GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-                  BASE_REF: ${{ github.event.pull_request.base.ref }}
-                  HEAD_REF: ${{ github.event.pull_request.head.ref }}
-                  PR_TITLE: ${{ github.event.pull_request.title }}
-                  PR_NUMBER: ${{ github.event.pull_request.number }}
-              run: |
-                  node - << 'EOF'
-                  const fs = require('fs');
-                  const { execSync } = require('child_process');
+      - name: Generate PR Description via Gemini
+        id: generate
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          node - << 'EOF'
+          const fs = require('fs');
+          const { execSync } = require('child_process');
 
-                  async function run() {
-                    const apiKey = process.env.GEMINI_API_KEY;
-                    if (!apiKey) {
-                      console.log('GEMINI_API_KEY secret not found. Skipping auto PR description generation.');
-                      return;
+          async function run() {
+            const apiKey = process.env.GEMINI_API_KEY;
+            if (!apiKey) {
+              console.log('GEMINI_API_KEY secret not found. Skipping auto PR description generation.');
+              return;
+            }
+
+            const baseRef = process.env.BASE_REF || 'main';
+
+            // Ensure base branch is fetched for diff comparison
+            try {
+              execSync(`git fetch origin ${baseRef} --depth=100`, { stdio: 'inherit' });
+            } catch (e) {
+              console.log('Notice: fetch error:', e.message);
+            }
+
+            // Get commits in this PR
+            let commits = '';
+            try {
+              commits = execSync(`git log origin/${baseRef}..HEAD --oneline --no-merges -n 30`).toString().trim();
+            } catch (e) {
+              commits = execSync('git log -n 5 --oneline').toString().trim();
+            }
+
+            // Get changed files
+            let changedFiles = '';
+            try {
+              changedFiles = execSync(`git diff --name-status origin/${baseRef}...HEAD`).toString().trim();
+            } catch (e) {
+              console.log('Notice: changed files error:', e.message);
+            }
+
+            // Get git diff patch (limited to 50KB to keep tokens optimal)
+            let diffPatch = '';
+            try {
+              diffPatch = execSync(`git diff origin/${baseRef}...HEAD`).toString();
+              if (diffPatch.length > 50000) {
+                diffPatch = diffPatch.substring(0, 50000) + '\n\n...[diff truncated for length]...';
+              }
+            } catch (e) {
+              console.log('Notice: diff error:', e.message);
+            }
+
+            const prompt = [
+              'You are a GitHub Pull Request description generator for an Angular application called Quiz-App-P1-Elevate.',
+              'Analyze the following commits, changed files, and git diff.',
+              '',
+              'Commits:',
+              commits,
+              '',
+              'Changed Files:',
+              changedFiles,
+              '',
+              'Git Diff:',
+              diffPatch,
+              '',
+              'Generate a concise, professional Pull Request description strictly following this format:',
+              '',
+              '## Description',
+              '<1-2 sentences summarizing what this PR accomplishes>',
+              '',
+              '## Related Issue',
+              'Closes <Extract issue number from branch name or commit messages like #123. If none found, write Closes #>',
+              '',
+              '## Commit — <type>: <emoji> <title>',
+              '<Use conventional commit type and emoji like feat: ✨, fix: 🐛, refactor: ♻️, docs: 📝, style: 🎨, test: 🧪>',
+              '',
+              '**Problem:** <Clear 1-2 sentence explanation of the root cause or why this change was needed>',
+              '',
+              '**Fix:** <Clear 1-2 sentence explanation of how the problem was resolved>',
+              '',
+              '### What Changed → Why',
+              '',
+              '| File | Change |',
+              '| :--- | :--- |',
+              '| `filename` | <Clear explanation of what changed and why> |',
+              '',
+              'CRITICAL RULES:',
+              '1. Output ONLY the raw markdown content. Do NOT wrap the entire response in markdown code blocks (```markdown ... ```).',
+              '2. Do NOT add any extra sections (no Type of Change, no Testing checkboxes, no Screenshots, no Deployment Notes).',
+              '3. The table MUST have exactly 2 columns: "File" and "Change".',
+              '4. File names in the table MUST be enclosed in backticks (e.g., `filename.ts`).',
+              '5. Group multiple files together if they belong to the same component (e.g. `component.ts`, `.html`, `.scss`).',
+              '6. Write clear, professional English.'
+            ].join('\n');
+
+            const models = ['gemini-3.8-flash', 'gemini-2.5-flash'];
+            let response;
+            let lastError = null;
+
+            for (const model of models) {
+              try {
+                response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'x-goog-api-key': apiKey
+                  },
+                  body: JSON.stringify({
+                    contents: [{
+                      parts: [{ text: prompt }]
+                    }],
+                    generationConfig: {
+                      temperature: 0.2,
+                      maxOutputTokens: 2048
                     }
+                  })
+                });
 
-                    const baseRef = process.env.BASE_REF || 'main';
+                if (response.ok) {
+                  break;
+                } else {
+                  const errText = await response.text();
+                  lastError = `Model ${model} failed (${response.status}): ${errText}`;
+                  console.log(lastError);
+                }
+              } catch (e) {
+                lastError = `Model ${model} request error: ${e.message}`;
+                console.log(lastError);
+              }
+            }
 
-                    // Ensure base branch is fetched for diff comparison
-                    try {
-                      execSync(`git fetch origin ${baseRef} --depth=100`, { stdio: 'inherit' });
-                    } catch (e) {
-                      console.log('Notice: fetch error:', e.message);
-                    }
+            if (!response || !response.ok) {
+              throw new Error(`All Gemini models failed. Last error: ${lastError}`);
+            }
 
-                    // Get commits in this PR
-                    let commits = '';
-                    try {
-                      commits = execSync(`git log origin/${baseRef}..HEAD --oneline --no-merges -n 30`).toString().trim();
-                    } catch (e) {
-                      commits = execSync('git log -n 5 --oneline').toString().trim();
-                    }
+            const data = await response.json();
+            let generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (!generatedText) {
+              throw new Error('No content returned from Gemini API');
+            }
 
-                    // Get changed files
-                    let changedFiles = '';
-                    try {
-                      changedFiles = execSync(`git diff --name-status origin/${baseRef}...HEAD`).toString().trim();
-                    } catch (e) {
-                      console.log('Notice: changed files error:', e.message);
-                    }
+            generatedText = generatedText.trim();
+            if (generatedText.startsWith('```markdown')) {
+              generatedText = generatedText.substring(11);
+            } else if (generatedText.startsWith('```')) {
+              generatedText = generatedText.substring(3);
+            }
+            if (generatedText.endsWith('```')) {
+              generatedText = generatedText.substring(0, generatedText.length - 3);
+            }
+            generatedText = generatedText.trim();
 
-                    // Get git diff patch (limited to 50KB to keep tokens optimal)
-                    let diffPatch = '';
-                    try {
-                      diffPatch = execSync(`git diff origin/${baseRef}...HEAD`).toString();
-                      if (diffPatch.length > 50000) {
-                        diffPatch = diffPatch.substring(0, 50000) + '\n\n...[diff truncated for length]...';
-                      }
-                    } catch (e) {
-                      console.log('Notice: diff error:', e.message);
-                    }
+            fs.writeFileSync('pr_description.md', generatedText);
+            console.log('PR description successfully generated.');
+          }
 
-                    const prompt = [
-                      'You are a GitHub Pull Request description generator for an Angular application called Quiz-App-P1-Elevate.',
-                      'Analyze the following commits, changed files, and git diff.',
-                      '',
-                      'Commits:',
-                      commits,
-                      '',
-                      'Changed Files:',
-                      changedFiles,
-                      '',
-                      'Git Diff:',
-                      diffPatch,
-                      '',
-                      'Generate a concise, professional Pull Request description strictly following this format:',
-                      '',
-                      '## Description',
-                      '<1-2 sentences summarizing what this PR accomplishes>',
-                      '',
-                      '## Related Issue',
-                      'Closes <Extract issue number from branch name or commit messages like #123. If none found, write Closes #>',
-                      '',
-                      '## Commit — <type>: <emoji> <title>',
-                      '<Use conventional commit type and emoji like feat: ✨, fix: 🐛, refactor: ♻️, docs: 📝, style: 🎨, test: 🧪>',
-                      '',
-                      '**Problem:** <Clear 1-2 sentence explanation of the root cause or why this change was needed>',
-                      '',
-                      '**Fix:** <Clear 1-2 sentence explanation of how the problem was resolved>',
-                      '',
-                      '### What Changed → Why',
-                      '',
-                      '| File | Change |',
-                      '| :--- | :--- |',
-                      '| `filename` | <Clear explanation of what changed and why> |',
-                      '',
-                      'CRITICAL RULES:',
-                      '1. Output ONLY the raw markdown content. Do NOT wrap the entire response in markdown code blocks (```markdown ... ```).',
-                      '2. Do NOT add any extra sections (no Type of Change, no Testing checkboxes, no Screenshots, no Deployment Notes).',
-                      '3. The table MUST have exactly 2 columns: "File" and "Change".',
-                      '4. File names in the table MUST be enclosed in backticks (e.g., `filename.ts`).',
-                      '5. Group multiple files together if they belong to the same component (e.g. `component.ts`, `.html`, `.scss`).',
-                      '6. Write clear, professional English.'
-                    ].join('\n');
+          run().catch(err => {
+            console.error('Failed to generate PR description:', err);
+            process.exit(1);
+          });
+          EOF
 
-                    const models = ['gemini-3.8-flash', 'gemini-2.5-flash'];
-                    let response;
-                    let lastError = null;
+      - name: Update PR Description on GitHub
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            if (!fs.existsSync('pr_description.md')) {
+              console.log('No pr_description.md found, skipping update.');
+              return;
+            }
+            const body = fs.readFileSync('pr_description.md', 'utf8');
+            if (!body || body.trim() === '') {
+              console.log('Empty description, skipping update.');
+              return;
+            }
 
-                    for (const model of models) {
-                      try {
-                        response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-                          method: 'POST',
-                          headers: {
-                            'Content-Type': 'application/json',
-                            'x-goog-api-key': apiKey
-                          },
-                          body: JSON.stringify({
-                            contents: [{
-                              parts: [{ text: prompt }]
-                            }],
-                            generationConfig: {
-                              temperature: 0.2,
-                              maxOutputTokens: 2048
-                            }
-                          })
-                        });
-
-                        if (response.ok) {
-                          break;
-                        } else {
-                          const errText = await response.text();
-                          lastError = `Model ${model} failed (${response.status}): ${errText}`;
-                          console.log(lastError);
-                        }
-                      } catch (e) {
-                        lastError = `Model ${model} request error: ${e.message}`;
-                        console.log(lastError);
-                      }
-                    }
-
-                    if (!response || !response.ok) {
-                      throw new Error(`All Gemini models failed. Last error: ${lastError}`);
-                    }
-
-                    const data = await response.json();
-                    let generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                    if (!generatedText) {
-                      throw new Error('No content returned from Gemini API');
-                    }
-
-                    generatedText = generatedText.trim();
-                    if (generatedText.startsWith('```markdown')) {
-                      generatedText = generatedText.substring(11);
-                    } else if (generatedText.startsWith('```')) {
-                      generatedText = generatedText.substring(3);
-                    }
-                    if (generatedText.endsWith('```')) {
-                      generatedText = generatedText.substring(0, generatedText.length - 3);
-                    }
-                    generatedText = generatedText.trim();
-
-                    fs.writeFileSync('pr_description.md', generatedText);
-                    console.log('PR description successfully generated.');
-                  }
-
-                  run().catch(err => {
-                    console.error('Failed to generate PR description:', err);
-                    process.exit(1);
-                  });
-                  EOF
-
-            - name: Update PR Description on GitHub
-              if: success()
-              uses: actions/github-script@v7
-              with:
-                  github-token: ${{ secrets.GITHUB_TOKEN }}
-                  script: |
-                      const fs = require('fs');
-                      if (!fs.existsSync('pr_description.md')) {
-                        console.log('No pr_description.md found, skipping update.');
-                        return;
-                      }
-                      const body = fs.readFileSync('pr_description.md', 'utf8');
-                      if (!body || body.trim() === '') {
-                        console.log('Empty description, skipping update.');
-                        return;
-                      }
-
-                      await github.rest.pulls.update({
-                        owner: context.repo.owner,
-                        repo: context.repo.repo,
-                        pull_number: context.payload.pull_request.number,
-                        body: body
-                      });
-                      console.log(`Successfully updated PR #${context.payload.pull_request.number} description.`);
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              body: body
+            });
+            console.log(`Successfully updated PR #${context.payload.pull_request.number} description.`);
