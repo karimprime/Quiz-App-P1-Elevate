@@ -1,9 +1,14 @@
 import { Component, EventEmitter, Output, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { AuthApiKpService } from 'auth-api-kp';
 import { NotificationService } from '../../../shared/services/notification/notification.service';
-import { SubmitButtonComponent } from "../../../shared/components/ui/submit-button/submit-button.component";
+import { SubmitButtonComponent } from '../../../shared/components/ui/submit-button/submit-button.component';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -25,7 +30,6 @@ export class ForgetPasswordComponent {
 
   isEmailPopoverVisible = signal<boolean>(false);
 
-
   showEmailPopover(): void {
     this.isEmailPopoverVisible.set(true);
   }
@@ -45,25 +49,31 @@ export class ForgetPasswordComponent {
     this.apiError.set('');
     const email = this.forgetPasswordForm.get('email')?.value ?? '';
 
-    this.forgetSub = this._authApiKpService.forgetPassword(this.forgetPasswordForm.value).subscribe({
-      next: (res) => {
-        if (res && res.message === 'success') {
-          this._notificationService.success('Verification code sent! Check your email!');
-          this.emailSubmitted.emit(email);
-        } else {
-          this.apiError.set('Failed to send verification code. Please try again.');
-          this._notificationService.error('Invalid email or server error.');
-        }
-      },
-      error: (err) => {
-        console.error('Forgot password request failed', err);
-        this.apiError.set('An error occurred. Please try again.');
-        this._notificationService.error(this.apiError());
-      },
-      complete: () => {
-        this.isLoading.set(false);
-      },
-    });
+    this.forgetSub = this._authApiKpService
+      .forgetPassword(this.forgetPasswordForm.value)
+      .subscribe({
+        next: (res) => {
+          if (res && res.message === 'success') {
+            this._notificationService.success(
+              'Verification code sent! Check your email!'
+            );
+            this.emailSubmitted.emit(email);
+          } else {
+            this.apiError.set(
+              'Failed to send verification code. Please try again.'
+            );
+            this._notificationService.error('Invalid email or server error.');
+          }
+        },
+        error: (err) => {
+          console.error('Forgot password request failed', err);
+          this.apiError.set('An error occurred. Please try again.');
+          this._notificationService.error(this.apiError());
+        },
+        complete: () => {
+          this.isLoading.set(false);
+        },
+      });
   }
 
   ngOnDestroy(): void {

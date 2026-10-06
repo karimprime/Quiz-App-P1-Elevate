@@ -1,15 +1,19 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { Subscription } from 'rxjs';
 
-import { AuthApiKpService } from 'auth-api-kp';
-
 import { Store } from '@ngrx/store';
 
-import { SubmitButtonComponent } from "../../../shared/components/ui/submit-button/submit-button.component";
+import { SubmitButtonComponent } from '../../../shared/components/ui/submit-button/submit-button.component';
 import { loginFailure, loginSuccess } from '../../../store/auth/auth.actions';
+import { AuthApiKpService } from '../../../../../projects/auth-api-kp/src/lib/auth-api-kp.service';
 
 @Component({
   selector: 'app-login',
@@ -49,7 +53,9 @@ export class LoginComponent {
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [
       Validators.required,
-      Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'),
+      Validators.pattern(
+        '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'
+      ),
     ]),
   });
 
@@ -109,22 +115,26 @@ export class LoginComponent {
     this.isLoading.set(true);
     this.apiError.set('');
 
-    this.loginSub = this._authApiKpService.login(this.loginForm.value).subscribe({
-      next: (res) => {
-        if ('token' in res && res.message === 'success') {
-          this._store.dispatch(loginSuccess({ token: res.token }));
-          this._router.navigate(['/dashboard/home']);
-        } else {
-          this.apiError.set('Email or Password is incorrect!');
-          this._store.dispatch(loginFailure({ error: this.apiError() }));
-        }
-      },
-      error: (err) => {
-        this._store.dispatch(loginFailure({ error: 'Email or Password is incorrect!' }));
-      },
-      complete: () => {
-        this.isLoading.set(false);
-      },
-    });
+    this.loginSub = this._authApiKpService
+      .login(this.loginForm.value)
+      .subscribe({
+        next: (res) => {
+          if ('token' in res && res.message === 'success') {
+            this._store.dispatch(loginSuccess({ token: res.token }));
+            this._router.navigate(['/dashboard/home']);
+          } else {
+            this.apiError.set('Email or Password is incorrect!');
+            this._store.dispatch(loginFailure({ error: this.apiError() }));
+          }
+        },
+        error: (err) => {
+          this._store.dispatch(
+            loginFailure({ error: 'Email or Password is incorrect!' })
+          );
+        },
+        complete: () => {
+          this.isLoading.set(false);
+        },
+      });
   }
 }
