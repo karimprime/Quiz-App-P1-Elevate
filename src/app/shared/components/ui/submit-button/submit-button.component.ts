@@ -15,7 +15,6 @@ import { CommonModule } from '@angular/common';
 export class SubmitButtonComponent {
   @Input({ required: true }) text!: string;
   @Input() type: 'submit' | 'button' | 'reset' = 'submit';
-  @Input() variant = 'primary';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
   @Input() icon?: string;
   @Input() loadingText?: string;
@@ -34,13 +33,9 @@ export class SubmitButtonComponent {
       md: 'py-2 px-4 text-base',
       lg: 'py-3 px-6 text-lg',
     }[this.size];
-    const variantClasses = {
-      primary:
-        'bg-colorNavLink text-white hover:bg-blue-700 focus:ring-blue-500 disabled:bg-blue-900',
-    }[this.variant];
     const fullWidthClass = this.fullWidth ? 'w-full' : '';
 
-    return [commonClasses, sizeClasses, variantClasses, fullWidthClass]
+    return [commonClasses, sizeClasses, fullWidthClass]
       .filter(Boolean)
       .join(' ');
   }
