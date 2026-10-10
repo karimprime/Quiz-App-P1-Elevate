@@ -116,7 +116,7 @@ jobs:
 
                   const errText = await res.text();
                   if (res.status === 429 && /quota/i.test(errText)) {
-                    break; // Skip to next model immediately on quota limit
+                    break;
                   }
                   if ((res.status === 503 || res.status === 429) && attempt < MAX_RETRIES) {
                     await new Promise(r => setTimeout(r, 1500));
@@ -136,12 +136,12 @@ jobs:
             const fileLines = (changedFiles || '').split('\n').filter(Boolean);
             const fileRows = fileLines.map(line => {
               const parts = line.trim().split(/\s+/);
-              const status = parts[0];
+              const status = parts[0] || 'M';
               const file = parts.slice(1).join(' ') || parts[0];
-              let action = 'Updated component implementation';
-              if (status === 'A') action = 'Added new file';
-              else if (status === 'D') action = 'Removed obsolete file';
-              else if (status && status.startsWith('R')) action = 'Renamed file';
+              let action = '**Updated** implementation to support required changes';
+              if (status === 'A') action = '**Added** new file and configuration';
+              else if (status === 'D') action = '**Removed** obsolete file to clean up codebase';
+              else if (status && status.startsWith('R')) action = '**Renamed** file for better structure';
               return `| \`${file}\` | ${action} |`;
             }).join('\n');
 
@@ -159,15 +159,15 @@ jobs:
               '',
               '| File | Change |',
               '| :--- | :--- |',
-              fileRows || '| `changes` | Various updates |'
+              fileRows || '| `changes` | **Updated** various project files |'
             ].join('\n');
           }
 
           async function generateCommitSection(apiKey, repoName, commit, changedFiles, diffPatch) {
             const parsed = parseCommitMessage(commit.subject);
             const prompt = [
-              `You are a GitHub PR description generator for an Angular application (${repoName}).`,
-              `Analyze the following single commit and generate a dedicated commit section following the exact reference structure.`,
+              `You are a Senior Technical Reviewer generating a Pull Request description for an Angular application (${repoName}).`,
+              `Analyze the following single commit and generate a dedicated, beautifully formatted commit section for reviewers.`,
               '',
               `Commit Subject: ${commit.subject}`,
               `Commit Hash: ${commit.shortHash}`,
@@ -177,7 +177,7 @@ jobs:
               `Git Diff (truncated):`,
               diffPatch,
               '',
-              'Strictly output ONLY the markdown for this single commit in the exact following format:',
+              'Strictly output ONLY the markdown for this single commit in the exact following structure:',
               '',
               `## Commit — ${parsed.formattedTitle}`,
               `<!-- commit-hash: ${commit.shortHash} -->`,
@@ -192,15 +192,15 @@ jobs:
               '',
               '| File | Change |',
               '| :--- | :--- |',
-              '| `filepath` | <Brief, clear explanation of what changed in this file and why> |',
+              '| `filepath` | **<Action Verb>** <Brief, clear explanation of what changed in this file and why> |',
               '',
               'CRITICAL RULES:',
               '1. Document ONLY this commit.',
-              '2. The section header MUST start with: "## Commit — "',
+              '2. Start each Change description with a bold action verb (e.g., **Migrated**, **Added**, **Updated**, **Cleaned up**, **Resolved**, **Refactored**).',
               '3. The table header MUST have exactly 2 columns: "File" and "Change".',
               '4. The section header MUST be EXACTLY "### What Changed → Why" (unicode arrow →).',
-              '5. Every file name in the table MUST be in backticks (`filename`).',
-              '6. Do NOT wrap output in markdown code blocks (```markdown). Output raw markdown only.',
+              '5. Every file name in the table MUST be enclosed in backticks (`filename`).',
+              '6. Do NOT wrap output in markdown code blocks. Output raw markdown only.',
               '7. Write clear, natural, professional English.'
             ].join('\n');
 
@@ -222,7 +222,7 @@ jobs:
 
           async function generateExecutiveDescription(apiKey, repoName, prTitle, headRef, allCommits, allDiff) {
             const prompt = [
-              `You are a GitHub PR description generator for an Angular application (${repoName}).`,
+              `You are a Senior Technical Reviewer generating a Pull Request description for an Angular application (${repoName}).`,
               `Generate a high-level executive summary for the pull request.`,
               `PR Title: ${prTitle}`,
               `Branch: ${headRef}`,
@@ -281,18 +281,18 @@ jobs:
             console.log(`Found ${commitsList.length} commit(s) in this PR.`);
 
             // Parse existing PR body to identify already-documented commits
-            const commitHeaderSplitter = /(?=^#{2,3}\s+Commit\s*[—–-]\s*)/m;
+            const commitHeaderSplitter = /(?=^## Commit\s*[—–-]\s*)/m;
             const existingSections = existingBody ? existingBody.split(commitHeaderSplitter) : [];
-            const existingHeader = existingSections[0] && !/^#{2,3}\s+Commit\s*[—–-]/m.test(existingSections[0])
+            const existingHeader = existingSections[0] && !/^## Commit\s*[—–-]/m.test(existingSections[0])
               ? existingSections[0].trim()
               : '';
-            const existingCommitBlocks = existingSections.filter(s => /^#{2,3}\s+Commit\s*[—–-]/m.test(s)).map(s => s.trim());
+            const existingCommitBlocks = existingSections.filter(s => /^## Commit\s*[—–-]/m.test(s)).map(s => s.trim());
 
             console.log(`Found ${existingCommitBlocks.length} existing commit section(s) in current PR description.`);
 
             // Determine Related Issue
             const issueMatch = (headRef + ' ' + prTitle + ' ' + (commitsList.map(c => c.subject).join(' '))).match(/(?:#|issue-|hrm-)(\d+)/i);
-            const issueNum = issueMatch ? `#${issueMatch[1]}` : '#';
+            const issueNum = issueMatch ? `#${issueMatch[1]}` : '';
 
             // Process each commit: preserve existing or generate new
             const finalCommitSections = [];
@@ -351,6 +351,8 @@ jobs:
                 allDiff
               );
 
+              const relatedIssueLine = issueNum ? `Closes ${issueNum}` : 'None';
+
               headerPart = [
                 '## Description',
                 '',
@@ -358,21 +360,48 @@ jobs:
                 '',
                 '## Related Issue',
                 '',
-                `Closes ${issueNum}`
+                relatedIssueLine,
+                '',
+                '> 💡 **Reviewer Context:**',
+                `> 📦 **Branch:** \`${headRef}\` → \`${baseRef}\` &nbsp;|&nbsp; 🔢 **Commits:** \`${commitsList.length}\``
               ].join('\n');
             } else if (!headerPart.includes('## Related Issue')) {
-              headerPart += `\n\n## Related Issue\n\nCloses ${issueNum}`;
+              const relatedIssueLine = issueNum ? `Closes ${issueNum}` : 'None';
+              headerPart += `\n\n## Related Issue\n\n${relatedIssueLine}`;
             }
+
+            // Separate commits with horizontal rules (---) for a clean visual card hierarchy
+            const formattedCommitCards = finalCommitSections
+              .map(sec => sec.trim())
+              .filter(Boolean)
+              .join('\n\n---\n\n');
+
+            // Add Reviewer Checklist Accordion at the bottom
+            const reviewerChecklist = [
+              '---',
+              '',
+              '<details>',
+              '<summary>🔍 <b>Reviewer Guidance & Checklist</b></summary>',
+              '',
+              '- [ ] **Architecture:** Changes follow clean architectural standards and feature-based structure.',
+              '- [ ] **Readability & Formatting:** No hardcoded values, dead code, or magic strings.',
+              '- [ ] **Regression Check:** Existing workflows and edge cases remain fully functional.',
+              '</details>'
+            ].join('\n');
 
             // Assemble the full PR description
             const fullDescription = [
               headerPart.trim(),
               '',
-              finalCommitSections.join('\n\n')
+              '---',
+              '',
+              formattedCommitCards,
+              '',
+              reviewerChecklist
             ].join('\n').trim();
 
             fs.writeFileSync('pr_description.md', fullDescription);
-            console.log('PR description successfully compiled with all commits.');
+            console.log('PR description successfully compiled with all commits and enhanced UI/UX.');
           }
 
           run().catch(err => {
