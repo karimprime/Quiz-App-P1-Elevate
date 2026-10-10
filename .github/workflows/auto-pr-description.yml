@@ -38,18 +38,217 @@ jobs:
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BODY: ${{ github.event.pull_request.body }}
         run: |
           node - << 'EOF'
           const fs = require('fs');
           const { execSync } = require('child_process');
 
+          const EMOJI_MAP = {
+            feat: '✨',
+            fix: '🐛',
+            refactor: '♻️',
+            docs: '📝',
+            style: '🎨',
+            test: '🧪',
+            ci: '⚡',
+            chore: '🤖',
+            perf: '⚡'
+          };
+
+          function parseCommitMessage(message) {
+            const firstLine = (message || '').trim().split('\n')[0].trim();
+            const match = firstLine.match(/^(feat|fix|refactor|docs|style|test|ci|chore|perf)(?:\(([^)]+)\))?:\s*(.*)$/i);
+            if (match) {
+              const type = match[1].toLowerCase();
+              const scope = match[2] ? match[2].trim() : '';
+              const rawSubject = match[3] ? match[3].trim() : '';
+              const emoji = EMOJI_MAP[type] || '🤖';
+              const cleanSubject = rawSubject.replace(/^[^\w\s]+/, '').trim();
+              const formattedTitle = scope
+                ? `${type}(${scope}): ${emoji} ${cleanSubject}`
+                : `${type}: ${emoji} ${cleanSubject}`;
+              return { type, scope, subject: cleanSubject, formattedTitle };
+            }
+            return {
+              type: 'chore',
+              scope: '',
+              subject: firstLine || 'update',
+              formattedTitle: `chore: 🤖 ${firstLine || 'update'}`
+            };
+          }
+
+          async function callGemini(apiKey, prompt) {
+            if (!apiKey) return null;
+            const models = [
+              'gemini-2.5-flash',
+              'gemini-2.0-flash',
+              'gemini-1.5-flash',
+              'gemini-3.5-flash-lite',
+              'gemini-3.6-flash',
+              'gemini-flash-latest'
+            ];
+            const MAX_RETRIES = 2;
+
+            for (const model of models) {
+              for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+                try {
+                  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'x-goog-api-key': apiKey
+                    },
+                    body: JSON.stringify({
+                      contents: [{ parts: [{ text: prompt }] }],
+                      generationConfig: {
+                        temperature: 0.2,
+                        maxOutputTokens: 2048
+                      }
+                    })
+                  });
+
+                  if (res.ok) {
+                    const data = await res.json();
+                    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) return text.trim();
+                  }
+
+                  const errText = await res.text();
+                  if (res.status === 429 && /quota/i.test(errText)) {
+                    break; // Skip to next model immediately on quota limit
+                  }
+                  if ((res.status === 503 || res.status === 429) && attempt < MAX_RETRIES) {
+                    await new Promise(r => setTimeout(r, 1500));
+                    continue;
+                  }
+                  break;
+                } catch (e) {
+                  if (attempt < MAX_RETRIES) await new Promise(r => setTimeout(r, 1500));
+                }
+              }
+            }
+            return null;
+          }
+
+          function generateFallbackCommitSection(commit, changedFiles) {
+            const parsed = parseCommitMessage(commit.subject);
+            const fileLines = (changedFiles || '').split('\n').filter(Boolean);
+            const fileRows = fileLines.map(line => {
+              const parts = line.trim().split(/\s+/);
+              const status = parts[0];
+              const file = parts.slice(1).join(' ') || parts[0];
+              let action = 'Updated component implementation';
+              if (status === 'A') action = 'Added new file';
+              else if (status === 'D') action = 'Removed obsolete file';
+              else if (status && status.startsWith('R')) action = 'Renamed file';
+              return `| \`${file}\` | ${action} |`;
+            }).join('\n');
+
+            return [
+              `## Commit — ${parsed.formattedTitle}`,
+              `<!-- commit-hash: ${commit.shortHash} -->`,
+              '',
+              '**Problem:**',
+              `Identified need for updates in ${parsed.scope || parsed.type} affecting ${fileLines.length} file(s).`,
+              '',
+              '**Fix:**',
+              `Implemented required changes and modular improvements for ${parsed.scope || 'the feature'}.`,
+              '',
+              '### What Changed → Why',
+              '',
+              '| File | Change |',
+              '| :--- | :--- |',
+              fileRows || '| `changes` | Various updates |'
+            ].join('\n');
+          }
+
+          async function generateCommitSection(apiKey, repoName, commit, changedFiles, diffPatch) {
+            const parsed = parseCommitMessage(commit.subject);
+            const prompt = [
+              `You are a GitHub PR description generator for an Angular application (${repoName}).`,
+              `Analyze the following single commit and generate a dedicated commit section following the exact reference structure.`,
+              '',
+              `Commit Subject: ${commit.subject}`,
+              `Commit Hash: ${commit.shortHash}`,
+              `Changed Files:`,
+              changedFiles,
+              '',
+              `Git Diff (truncated):`,
+              diffPatch,
+              '',
+              'Strictly output ONLY the markdown for this single commit in the exact following format:',
+              '',
+              `## Commit — ${parsed.formattedTitle}`,
+              `<!-- commit-hash: ${commit.shortHash} -->`,
+              '',
+              '**Problem:**',
+              '<Clear, professional 1-2 sentence explanation of the specific problem, bug, limitation, or motivation addressed by this commit>',
+              '',
+              '**Fix:**',
+              '<Clear, professional 1-2 sentence explanation of what was modified, how the solution works, and how it resolves the issue>',
+              '',
+              '### What Changed → Why',
+              '',
+              '| File | Change |',
+              '| :--- | :--- |',
+              '| `filepath` | <Brief, clear explanation of what changed in this file and why> |',
+              '',
+              'CRITICAL RULES:',
+              '1. Document ONLY this commit.',
+              '2. The section header MUST start with: "## Commit — "',
+              '3. The table header MUST have exactly 2 columns: "File" and "Change".',
+              '4. The section header MUST be EXACTLY "### What Changed → Why" (unicode arrow →).',
+              '5. Every file name in the table MUST be in backticks (`filename`).',
+              '6. Do NOT wrap output in markdown code blocks (```markdown). Output raw markdown only.',
+              '7. Write clear, natural, professional English.'
+            ].join('\n');
+
+            const generated = await callGemini(apiKey, prompt);
+            if (generated) {
+              let cleaned = generated
+                .replace(/^```(?:markdown)?\s*\n?/i, '')
+                .replace(/\n?```\s*$/i, '')
+                .trim();
+              cleaned = cleaned.replace(/###\s*What Changed\s*(?:->|–|—|to)\s*Why/gi, '### What Changed → Why');
+              if (!cleaned.includes(`<!-- commit-hash: ${commit.shortHash} -->`)) {
+                cleaned = cleaned.replace(/(^## Commit — [^\n]+)/m, `$1\n<!-- commit-hash: ${commit.shortHash} -->`);
+              }
+              return cleaned;
+            }
+
+            return generateFallbackCommitSection(commit, changedFiles);
+          }
+
+          async function generateExecutiveDescription(apiKey, repoName, prTitle, headRef, allCommits, allDiff) {
+            const prompt = [
+              `You are a GitHub PR description generator for an Angular application (${repoName}).`,
+              `Generate a high-level executive summary for the pull request.`,
+              `PR Title: ${prTitle}`,
+              `Branch: ${headRef}`,
+              `Commits:\n${allCommits}`,
+              `Git Diff summary:\n${allDiff.substring(0, 15000)}`,
+              '',
+              'Output 1-2 concise, professional paragraphs summarizing what this pull request delivers across all modules, layouts, and components.',
+              'Do NOT include any markdown headers or bullet points. Output plain text paragraphs only.'
+            ].join('\n');
+
+            const text = await callGemini(apiKey, prompt);
+            if (text) {
+              return text.replace(/^```(?:markdown)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim();
+            }
+
+            return `This pull request delivers updates for ${prTitle || headRef}, implementing required functionality and enhancements across affected Angular modules and shared components.`;
+          }
+
           async function run() {
             const apiKey = process.env.GEMINI_API_KEY;
-            const repoName = process.env.REPO_NAME || 'Quiz-App-P1-Elevate';
+            const repoName = process.env.REPO_NAME || 'HRM_front';
             const baseRef = process.env.BASE_REF || 'main';
             const headRef = process.env.HEAD_REF || '';
             const prTitle = process.env.PR_TITLE || '';
             const prNumber = process.env.PR_NUMBER || '';
+            const existingBody = (process.env.PR_BODY || '').trim();
 
             // Ensure base branch is fetched for diff comparison
             try {
@@ -58,225 +257,122 @@ jobs:
               console.log('Notice: fetch error:', e.message);
             }
 
-            // Get commits in this PR
-            let commits = '';
+            // Get all commits in this PR in chronological order (oldest to newest)
+            let commitsList = [];
             try {
-              commits = execSync(`git log origin/${baseRef}..HEAD --oneline --no-merges -n 30`).toString().trim();
-            } catch (e) {
-              commits = execSync('git log -n 5 --oneline').toString().trim();
-            }
-
-            // Get changed files
-            let changedFiles = '';
-            try {
-              changedFiles = execSync(`git diff --name-status origin/${baseRef}...HEAD`).toString().trim();
-            } catch (e) {
-              console.log('Notice: changed files error:', e.message);
-            }
-
-            // Get git diff patch (limited to 50KB to keep tokens optimal)
-            let diffPatch = '';
-            try {
-              diffPatch = execSync(`git diff origin/${baseRef}...HEAD`).toString();
-              if (diffPatch.length > 50000) {
-                diffPatch = diffPatch.substring(0, 50000) + '\n\n...[diff truncated for length]...';
+              const logOut = execSync(`git log origin/${baseRef}..HEAD --reverse --format="%H|||%h|||%s" --no-merges`).toString().trim();
+              if (logOut) {
+                commitsList = logOut.split('\n').filter(Boolean).map(line => {
+                  const [hash, shortHash, ...subjectParts] = line.split('|||');
+                  return { hash, shortHash, subject: subjectParts.join('|||').trim() };
+                });
               }
             } catch (e) {
-              console.log('Notice: diff error:', e.message);
+              console.log('Notice: git log error, falling back to recent commits:', e.message);
+              const logOut = execSync(`git log -n 5 --reverse --format="%H|||%h|||%s" --no-merges`).toString().trim();
+              if (logOut) {
+                commitsList = logOut.split('\n').filter(Boolean).map(line => {
+                  const [hash, shortHash, ...subjectParts] = line.split('|||');
+                  return { hash, shortHash, subject: subjectParts.join('|||').trim() };
+                });
+              }
             }
 
-            const prompt = [
-              `You are a GitHub Pull Request description generator for an Angular application called ${repoName}.`,
-              'Analyze the following branch, PR title, commits, changed files, and git diff.',
-              '',
-              'Branch: ' + headRef,
-              'PR Title: ' + prTitle,
-              '',
-              'Commits:',
-              commits,
-              '',
-              'Changed Files:',
-              changedFiles,
-              '',
-              'Git Diff:',
-              diffPatch,
-              '',
-              'Generate a concise, professional Pull Request description strictly following this format:',
-              '',
-              '## Description',
-              '<1-2 sentences summarizing what this PR accomplishes>',
-              '',
-              '## Related Issue',
-              'Closes <Extract issue number from branch name (e.g. HRM-1234, issue-42), PR title, or commit messages like #123. If found write Closes #<number>. If none found, write Closes #>',
-              '',
-              '## Commit — <type>: <emoji> <title>',
-              '<Use conventional commit type and emoji like feat: ✨, fix: 🐛, refactor: ♻️, docs: 📝, style: 🎨, test: 🧪, ci: ⚡, chore: 🤖, perf: ⚡>',
-              '',
-              '**Problem:** <Clear 1-2 sentence explanation of the root cause or why this change was needed>',
-              '',
-              '**Fix:** <Clear 1-2 sentence explanation of how the problem was resolved>',
-              '',
-              '### What Changed → Why',
-              '',
-              '| File | Change |',
-              '| :--- | :--- |',
-              '| `filename` | <Clear explanation of what changed and why> |',
-              '',
-              'CRITICAL RULES:',
-              '1. Output ONLY the raw markdown content. Do NOT wrap the entire response in markdown code blocks (```markdown ... ```).',
-              '2. Do NOT add any extra sections (no Type of Change, no Testing checkboxes, no Screenshots, no Deployment Notes).',
-              '3. The table MUST have exactly 2 columns: "File" and "Change".',
-              '4. The section header MUST be EXACTLY: "### What Changed → Why" (using the unicode arrow →, not ->).',
-              '5. File names in the table MUST be enclosed in backticks (e.g., `filename.ts`).',
-              '6. Group multiple files together if they belong to the same component (e.g. `component.ts`, `.html`, `.scss`).',
-              '7. Write clear, professional English.'
-            ].join('\n');
+            console.log(`Found ${commitsList.length} commit(s) in this PR.`);
 
-            // Prioritize reliable, fast models with high availability first
-            const models = [
-              'gemini-3.5-flash-lite',
-              'gemini-3.6-flash',
-              'gemini-flash-lite-latest',
-              'gemini-flash-latest',
-              'gemini-3.8-flash'
-            ];
-            const MAX_RETRIES = 2;
-            let response;
-            let lastError = null;
+            // Parse existing PR body to identify already-documented commits
+            const commitHeaderSplitter = /(?=^#{2,3}\s+Commit\s*[—–-]\s*)/m;
+            const existingSections = existingBody ? existingBody.split(commitHeaderSplitter) : [];
+            const existingHeader = existingSections[0] && !/^#{2,3}\s+Commit\s*[—–-]/m.test(existingSections[0])
+              ? existingSections[0].trim()
+              : '';
+            const existingCommitBlocks = existingSections.filter(s => /^#{2,3}\s+Commit\s*[—–-]/m.test(s)).map(s => s.trim());
 
-            if (apiKey) {
-              for (const model of models) {
-                console.log(`Trying model: ${model}`);
-                for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-                  try {
-                    console.log(`Attempt ${attempt}/${MAX_RETRIES} with model ${model}...`);
-                    response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                        'x-goog-api-key': apiKey
-                      },
-                      body: JSON.stringify({
-                        contents: [{
-                          parts: [{ text: prompt }]
-                        }],
-                        generationConfig: {
-                          temperature: 0.2,
-                          maxOutputTokens: 2048
-                        }
-                      })
-                    });
+            console.log(`Found ${existingCommitBlocks.length} existing commit section(s) in current PR description.`);
 
-                    if (response.ok) {
-                      console.log(`Success on attempt ${attempt} with ${model}.`);
-                      break;
-                    }
+            // Determine Related Issue
+            const issueMatch = (headRef + ' ' + prTitle + ' ' + (commitsList.map(c => c.subject).join(' '))).match(/(?:#|issue-|hrm-)(\d+)/i);
+            const issueNum = issueMatch ? `#${issueMatch[1]}` : '#';
 
-                    const errText = await response.text();
-                    lastError = `Model ${model} attempt ${attempt} failed (${response.status}): ${errText}`;
-                    console.log(lastError);
+            // Process each commit: preserve existing or generate new
+            const finalCommitSections = [];
 
-                    // Skip immediately to next model if daily quota is exceeded (retrying won't help)
-                    if (response.status === 429 && /quota/i.test(errText)) {
-                      console.log(`Quota exceeded for ${model}, skipping to next model.`);
-                      break;
-                    }
+            for (const commit of commitsList) {
+              // Check if this commit is already documented in existing sections
+              const existingBlock = existingCommitBlocks.find(block => {
+                if (block.includes(`commit-hash: ${commit.shortHash}`)) return true;
+                const firstLine = block.split('\n')[0].toLowerCase();
+                const parsed = parseCommitMessage(commit.subject);
+                if (parsed.subject && firstLine.includes(parsed.subject.toLowerCase().substring(0, 30))) return true;
+                return false;
+              });
 
-                    // Retry once on transient errors (503 UNAVAILABLE, 429 RATE_LIMIT), then move to next model
-                    if ((response.status === 503 || response.status === 429) && attempt < MAX_RETRIES) {
-                      const delay = 1500;
-                      console.log(`Retrying ${model} in ${delay / 1000}s...`);
-                      await new Promise(r => setTimeout(r, delay));
-                      continue;
-                    }
-                    break; // Move to next model
-                  } catch (e) {
-                    lastError = `Model ${model} attempt ${attempt} error: ${e.message}`;
-                    console.log(lastError);
-                    if (attempt < MAX_RETRIES) {
-                      await new Promise(r => setTimeout(r, 1500));
-                    }
-                  }
+              if (existingBlock) {
+                console.log(`Preserving existing section for commit ${commit.shortHash}: ${commit.subject}`);
+                finalCommitSections.push(existingBlock);
+              } else {
+                console.log(`Generating NEW section for commit ${commit.shortHash}: ${commit.subject}`);
+                let commitFiles = '';
+                try {
+                  commitFiles = execSync(`git show --name-status --format="" ${commit.hash}`).toString().trim();
+                } catch (e) {
+                  console.log(`Notice: git show files error for ${commit.shortHash}:`, e.message);
                 }
-                if (response && response.ok) break;
+
+                let commitDiff = '';
+                try {
+                  commitDiff = execSync(`git show ${commit.hash}`).toString();
+                  if (commitDiff.length > 20000) {
+                    commitDiff = commitDiff.substring(0, 20000) + '\n\n...[diff truncated for length]...';
+                  }
+                } catch (e) {
+                  console.log(`Notice: git show diff error for ${commit.shortHash}:`, e.message);
+                }
+
+                const newSection = await generateCommitSection(apiKey, repoName, commit, commitFiles, commitDiff);
+                finalCommitSections.push(newSection);
               }
-            } else {
-              console.log('GEMINI_API_KEY secret not found. Using intelligent fallback description generator.');
             }
 
-            let generatedText = '';
-            if (response && response.ok) {
-              const data = await response.json();
-              generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-            }
+            // Build Top Header (## Description & ## Related Issue)
+            let headerPart = existingHeader;
+            if (!headerPart || !headerPart.includes('## Description')) {
+              let allDiff = '';
+              try {
+                allDiff = execSync(`git diff origin/${baseRef}...HEAD`).toString();
+              } catch (e) {}
 
-            if (!generatedText) {
-              console.warn(`All Gemini models failed or key missing. Last error: ${lastError}`);
-              console.log('Generating fallback PR description from git metadata...');
+              const execDesc = await generateExecutiveDescription(
+                apiKey,
+                repoName,
+                prTitle,
+                headRef,
+                commitsList.map(c => c.subject).join('\n'),
+                allDiff
+              );
 
-              const fileRows = (changedFiles || '').split('\n')
-                .filter(Boolean)
-                .map(line => {
-                  const parts = line.trim().split(/\s+/);
-                  const status = parts[0];
-                  const file = parts.slice(1).join(' ') || parts[0];
-                  const action = status === 'A' ? 'Added new file' : status === 'D' ? 'Removed file' : 'Updated file';
-                  return `| \`${file}\` | ${action} |`;
-                }).join('\n');
-
-              const firstLine = (prTitle || (commits ? commits.split('\n')[0] : '')).trim();
-              const typeMatch = firstLine.match(/^(feat|fix|refactor|docs|style|test|ci|chore|perf)(?:\([^)]+\))?:?\s*(.*)$/i);
-              const type = typeMatch ? typeMatch[1].toLowerCase() : 'chore';
-              const subject = typeMatch && typeMatch[2] ? typeMatch[2].replace(/^[^\w\s]+/, '').trim() : (firstLine || 'update');
-
-              const emojiMap = {
-                feat: '✨',
-                fix: '🐛',
-                refactor: '♻️',
-                docs: '📝',
-                style: '🎨',
-                test: '🧪',
-                ci: '⚡',
-                chore: '🤖',
-                perf: '⚡'
-              };
-              const emoji = emojiMap[type] || '🤖';
-
-              const issueMatch = (headRef + ' ' + prTitle + ' ' + commits).match(/(?:#|issue-|hrm-)(\d+)/i);
-              const issueNum = issueMatch ? `#${issueMatch[1]}` : '#';
-
-              generatedText = [
+              headerPart = [
                 '## Description',
-                firstLine || 'Automated PR update based on changes.',
+                '',
+                execDesc,
                 '',
                 '## Related Issue',
-                `Closes ${issueNum}`,
                 '',
-                `## Commit — ${type}: ${emoji} ${subject}`,
-                '',
-                '**Problem:** Need automated updates and traceability for the latest changes.',
-                '',
-                '**Fix:** Generated structured PR description summarizing branch changes and modified files.',
-                '',
-                '### What Changed → Why',
-                '',
-                '| File | Change |',
-                '| :--- | :--- |',
-                fileRows || '| `changes` | Various updates |'
+                `Closes ${issueNum}`
               ].join('\n');
+            } else if (!headerPart.includes('## Related Issue')) {
+              headerPart += `\n\n## Related Issue\n\nCloses ${issueNum}`;
             }
 
-            // Strip code block wrapping
-            generatedText = generatedText
-              .replace(/^```(?:markdown)?\s*\n?/i, '')
-              .replace(/\n?```\s*$/i, '')
-              .trim();
+            // Assemble the full PR description
+            const fullDescription = [
+              headerPart.trim(),
+              '',
+              finalCommitSections.join('\n\n')
+            ].join('\n').trim();
 
-            // Guarantee unicode arrow formatting in section header
-            generatedText = generatedText.replace(/###\s*What Changed\s*(?:->|–|—|to)\s*Why/gi, '### What Changed → Why');
-
-            fs.writeFileSync('pr_description.md', generatedText);
-            console.log('PR description successfully generated.');
+            fs.writeFileSync('pr_description.md', fullDescription);
+            console.log('PR description successfully compiled with all commits.');
           }
 
           run().catch(err => {
